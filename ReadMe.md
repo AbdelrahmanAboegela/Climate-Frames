@@ -23,6 +23,15 @@
 7. [Data Format Recommendations](#7-data-format-recommendations)
 8. [Technical Details for Reference](#8-technical-details)
 9. [Conclusions and Next Steps](#9-conclusions-and-next-steps)
+10. [Proposed Architecture — Design, Rationale & Handling the Large Label Space](#10-proposed-architecture--design-rationale--handling-the-large-label-space)
+    - 10.1 The Core Architectural Challenge
+    - 10.2 Head 1 — BIO Token Classifier
+    - 10.3 Head 2 — Frame Classification via Dual-Encoder Retrieval
+    - 10.4 Head 3 — Contrastive Token Embedding
+    - 10.5 Handling 89 Distinct Frames — A Five-Layer Strategy
+    - 10.6 Summary of Architectural Recommendations
+    - 10.7 Expected Training Regime
+    - 10.8 Relationship to Published Work & Novelty Position
 
 ---
 
@@ -553,6 +562,258 @@ This section provides additional numerical details for readers interested in the
 | 3. Add "Token Frames" column | Annotators | Map each frame-evoking token to its specific frame |
 | 4. Expand dataset | Annotators | Add more annotated paragraphs, especially for frames with only 1–2 examples |
 | 5. Fine-tune the model | Automated | Train the classification and token extraction components |
+
+---
+
+## 10. Proposed Architecture — Design, Rationale & Handling the Large Label Space
+
+This section documents the proposed system architecture for the full frame classification and token extraction pipeline, evaluates its components against the current NLP literature, and provides specific recommendations for the most critical engineering challenge: **89 distinct frame labels with very few training examples per label**.
+
+---
+
+### 10.1 The Core Architectural Challenge
+
+The task has three simultaneous goals:
+
+1. **Detect which frames** a paragraph evokes (paragraph-level, multi-label: one core frame + N peripheral frames).
+2. **Locate the specific tokens** that evoke each frame (token-level, sequence labeling).
+3. **Learn a shared embedding space** where paragraphs and tokens with overlapping frames are placed close together, even when direct examples are scarce.
+
+The proposed architecture addresses all three goals via a single shared backbone (ClimateBERT with LoRA adapters) and three specialized output heads. The diagram below shows the full system:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          Input Paragraph                             │
+└─────────────────────────┬───────────────────────────────────────────┘
+                           │
+              ┌────────────▼────────────┐
+              │  ClimateBERT Tokenizer   │
+              └────────────┬────────────┘
+                           │
+              ┌────────────▼────────────────────────────────────────┐
+              │   Shared Backbone: distilroberta-base-climate-f      │
+              │   (6 Transformer layers, 768-dim hidden states)      │
+              │   + LoRA adapters (r=16, α=32, dropout=0.1)         │
+              └────┬──────────────┬───────────────────┬─────────────┘
+                   │              │                   │
+       ┌───────────▼──┐   ┌───────▼────────┐  ┌──────▼──────────────┐
+       │   HEAD 1      │   │    HEAD 2       │  │      HEAD 3          │
+       │ Token BIO     │   │ Frame Matching  │  │  Contrastive Embed. │
+       │ Classifier    │   │ (Dual-Encoder)  │  │  (Token-Pool SupCon)│
+       └───────────────┘   └────────────────┘  └─────────────────────┘
+       CrossEntropy         InfoNCE / BCE        Soft SupCon (overlap)
+       (weighted, +CRF)     (retrieval loss)     (frame-weighted)
+                   │              │                   │
+                   └──────────────┴───────────────────┘
+                                  │
+                   Total Loss = λ₁·L_bio + λ₂·L_frame + λ₃·L_supcon
+```
+
+---
+
+### 10.2 Head 1 — BIO Token Classifier (Frame-Evoking Span Detection)
+
+**What it does**: Takes the per-token hidden states from ClimateBERT and predicts a BIO tag for each token, identifying which words and phrases are frame-evoking.
+
+**Critical design decision — Generic vs. frame-specific BIO:**
+
+| Scheme | Tags | When appropriate |
+|---|---|---|
+| **Generic BIO** (recommended) | `B-FRAME_EVOKE`, `I-FRAME_EVOKE`, `O` | When dataset < 500 paragraphs, or label space > 30 frames |
+| Frame-specific BIO | `B-Melting`, `I-Melting`, `B-Causation`, ... × 89 | Only viable with ≥ 50 examples per frame |
+
+**Recommendation**: Use **generic BIO** (3 tags total) at this stage. With 89 frames and most having only 1–2 annotated paragraphs, frame-specific BIO produces 178 output tags — the vast majority of which will never be seen during training, causing the model to learn nothing about them. The *which frame* question is handled by Head 2; Head 1's job is only to say *whether* a span is frame-evoking.
+
+**Additional recommendation — CRF layer**: Add a Conditional Random Field (CRF) decoding layer on top of the linear projection. CRF enforces valid BIO sequences at no training cost (e.g., prevents `I-FRAME` appearing after `O`, a common failure mode of plain linear decoders). This is the standard choice in all production NER systems and is expected by reviewers.
+
+```
+Per-token hidden states (seq_len × 768)
+    → Linear(768 → 3)
+    → CRF(3 tags: B, I, O)
+    → Loss: Weighted CrossEntropy (O-class weight ≈ 0.1 to counter dominance)
+```
+
+---
+
+### 10.3 Head 2 — Frame Classification via Dual-Encoder Retrieval
+
+This is the most important deviation from a naive design, and the single most impactful architectural decision for handling the 89-label problem.
+
+#### The Problem with Flat Softmax over 89 Classes
+
+A conventional approach would be: `CLS embedding → Linear(768 → 89) → Softmax`. This fails here because:
+
+- **Most classes have 1–2 training examples** — the linear layer learns weights for 89 classes from fewer than 10 examples each on average.
+- The model cannot generalize to frames it has never seen or barely seen (**zero-shot / few-shot collapse**).
+- Adding new frames requires retraining the entire head (no open-vocabulary extension).
+- The 89-way loss surface is dominated by the ~4 frames with ≥ 2 examples (Causation, Melting, Energy Transition, Forced Migration), causing all other classes to be predicted near-randomly.
+
+This is a known failure mode documented in the extreme multi-label classification (XMC) literature (Gupta et al., 2023; Wang et al., 2025).
+
+#### The Solution: Dual-Encoder Semantic Frame Matching
+
+Instead of learning a weight vector per class, the model learns to **match paragraphs to frame descriptions** in a shared embedding space. This is the same principle used by retrieval-augmented classifiers and zero-shot XMC systems.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              Dual-Encoder Frame Matching                 │
+│                                                         │
+│  Paragraph                    Frame Descriptions        │
+│  [CLS] embedding  ←→→→→→→→→→  encode("Causation:        │
+│   (768-dim,             │      the attribution of       │
+│  L2-normalized)         │      climate effects to       │
+│                         │      human activities")       │
+│                         │                               │
+│                         │      encode("Melting:         │
+│                         │      the physical loss of     │
+│                         │      ice mass...")            │
+│                         │                               │
+│                         └─→  cosine_sim(para, frame_i)  │
+│                              for each of the 89 frames  │
+│                                                         │
+│  Core frame  = argmax(similarities)                     │
+│  Peripheral  = {frames | sim > threshold_i}             │
+└─────────────────────────────────────────────────────────┘
+```
+
+**How frame descriptions are created**: The linguistics team writes a one-to-two sentence description for each frame (e.g., *"Causation: language that attributes responsibility for climate change to specific actors, processes, or substances, typically through causal verbs and agent-patient constructions"*). These descriptions are encoded by the same ClimateBERT backbone and cached as fixed-dimensional vectors. No re-training is needed when new frames are added — only a new description vector is computed.
+
+**Training objective**: Instead of cross-entropy, the model is trained with an **InfoNCE / NTXent contrastive retrieval loss**:
+- For each paragraph, the correct frame description is the positive sample.
+- All other frame descriptions in the batch are negatives.
+- The loss pulls the paragraph embedding toward its correct frame description and pushes it away from all others.
+
+```
+L_frame = -log[ exp(sim(para, frame_pos)/τ) / Σ_j exp(sim(para, frame_j)/τ) ]
+```
+
+For **peripheral frames** (multi-label), a binary threshold is applied per frame after training, or a BCE loss is added over similarity scores with per-frame thresholds tuned on validation data.
+
+**Why this works for the large label space**:
+
+| Property | Flat Softmax (89 classes) | Dual-Encoder Matching |
+|---|---|---|
+| Generalizes to 1-shot frames | ✗ No — collapses | ✓ Yes — description provides prior |
+| Handles new frames without retraining | ✗ No | ✓ Yes — add description vector |
+| Interpretable similarity | ✗ No | ✓ Yes — direct cosine score |
+| Works as dataset grows | ✓ Yes | ✓ Yes — improves with data |
+| Handles peripheral frame thresholds | Complex | ✓ Natural (per-frame threshold) |
+
+---
+
+### 10.4 Head 3 — Contrastive Token Embedding (Soft Supervised Contrastive Loss)
+
+**What it does**: Takes the hidden states of *only* the frame-evoking tokens (identified by Head 1's BIO predictions), mean-pools them into a single span representation, and projects through a 2-layer MLP into a 128-dimensional embedding space. A soft supervised contrastive loss then trains this space so that:
+
+- Tokens evoking the **same frame** → distance ≈ 0 (positive pairs, weight = 1.0)
+- Tokens evoking **overlapping peripheral frames** → intermediate distance (soft positive, weight = 0.5)
+- Tokens with **no frame overlap** → distance ≈ 1 (negatives, weight = 0.0)
+
+This elegantly handles the multi-label peripheral frame structure: peripheral overlap creates a continuous similarity gradient rather than a hard positive/negative boundary.
+
+```
+Frame-evoking token hidden states (k tokens × 768)
+    → Mean pool → (768,)
+    → MLP: Linear(768→256) → ReLU → Linear(256→128)
+    → L2 normalize → (128,)
+    → Soft SupCon loss (frame-overlap-weighted similarity matrix)
+```
+
+**Important implementation note**: During training, Head 3 uses *gold-annotated* frame-evoking tokens (from the "Tokens" column). At inference, it uses *Head 1's predicted* BIO spans. This train/inference gap should be documented and evaluated explicitly (the performance difference between using gold vs. predicted spans is itself a reportable finding).
+
+---
+
+### 10.5 Handling 89 Distinct Frames — A Five-Layer Strategy
+
+This is the single most critical challenge in the project. Below is a prioritized strategy, ordered by expected impact:
+
+#### Layer 1 — Label Description Encoding (Highest Impact)
+As described in Section 10.3, replacing the flat classifier with a dual-encoder approach using linguist-written frame descriptions is the most effective single intervention. It transforms the problem from *"89-class classification with no examples"* into *"similarity matching guided by linguistic knowledge"*, which is dramatically more data-efficient.
+
+**Action required from the linguistics team**: Write a 1–3 sentence description of each frame. The description should include:
+- What the frame represents conceptually
+- The typical linguistic indicators (key verbs, nouns, metaphors)
+- What distinguishes it from its nearest neighbor frames
+
+Example:
+> **Causation**: Frames in which human activities, substances, or processes are presented as causes of climate change effects. Characterized by causal verbs (*cause*, *drive*, *generate*, *lead to*), agent-patient constructions, and explicit attribution language. Distinguished from Greenhouse Effect by the presence of an identified responsible agent.
+
+#### Layer 2 — Hierarchical Frame Grouping (High Impact)
+Group the 89 frames into 6–8 **super-categories** based on their linguistic and thematic relationships. The model then performs two-stage classification:
+1. Predict the **super-category** (6-way classifier — enough data for each).
+2. Within the predicted super-category, predict the **specific frame** (5–15 options instead of 89).
+
+Proposed grouping based on the POC's frame taxonomy analysis (see Section 5.2):
+
+| Super-Category | Candidate Frames |
+|---|---|
+| **Physical Phenomena** | Melting, Glacier Retreat, Sea Level Rise, Flooding, Drought, Ecosystem Degradation... |
+| **Causal Attribution** | Causation, Greenhouse Effect, Emission Generation, Sectoral Responsibility... |
+| **Threat & Risk** | Danger Threat, Disaster Intensification, Climate Risk Escalation, Extreme Weather... |
+| **Human & Social Impact** | Human Impact, Forced Migration, Livelihood Loss, Public Health, Food Security... |
+| **Governance & Policy** | Climate Action, Collective Action, Energy Transition, International Agreements... |
+| **Denial & Uncertainty** | Skepticism, Scientific Uncertainty, Delayed Action... |
+| **Economic Framing** | Economic Cost, Market Solutions, Green Economy... |
+| **Moral & Ethical** | Intergenerational Justice, Climate Justice, Responsibility... |
+
+This hierarchical structure has been shown to outperform flat classifiers on imbalanced multi-class problems (Bertalis et al., 2024; Audibert & Gauffre, 2024).
+
+#### Layer 3 — LLM-Assisted Data Augmentation (High Impact for Rare Frames)
+For frames with only 1–2 annotated examples, use a large language model (e.g., GPT-4o) to generate synthetic training paragraphs. The prompt instructs the LLM to write a climate news paragraph that specifically evokes the target frame using realistic linguistic constructions, without simply paraphrasing the original.
+
+This approach has been validated in few-shot NLP settings and is particularly effective when combined with a dual-encoder classifier, as the synthetic examples help anchor the frame description in a larger portion of embedding space.
+
+**Caution**: Synthetic paragraphs should be clearly labeled as augmented data in any publication and validated by a linguist before use.
+
+#### Layer 4 — Long-Tail Contrastive Loss (Moderate Impact)
+When training Head 3's contrastive objective, apply **frequency-inverse re-weighting** to the frame overlap matrix: rare frames receive higher weight in the loss, preventing the 4 frequent frames (Causation, Melting, Energy Transition, Forced Migration) from dominating the embedding space geometry. This is the approach used by Audibert et al. (2024) for long-tailed multi-label contrastive learning.
+
+#### Layer 5 — Per-Frame Threshold Calibration (Moderate Impact for Peripheral Frames)
+For peripheral frame detection, do not use a single global activation threshold (e.g., sigmoid > 0.5). Instead, calibrate a separate threshold per frame on the validation set, optimized for F1. Rare frames typically need a lower threshold; frequent frames a higher one. This is a standard post-processing step in multi-label classification that significantly improves macro-F1 on imbalanced label distributions.
+
+---
+
+### 10.6 Summary of Architectural Recommendations
+
+| Component | Original Proposal | Recommended Modification | Reason |
+|---|---|---|---|
+| Frame Classification Head | Linear(768→89) + CE/BCE | **Dual-encoder** semantic matching + InfoNCE | 89-class flat softmax fails with 1–2 examples per frame |
+| BIO Tag Scheme | Frame-specific (178 tags) | **Generic B/I/O** (3 tags) | Frame-specific tags are unlearnable at current dataset scale |
+| BIO Decoder | Linear | **Linear + CRF** | Enforces valid BIO sequences; standard for NER |
+| Head 3 Token Pool | Gold tokens only | **Differentiable weighting by Head 1 confidence** | Removes train/inference gap; makes system end-to-end |
+| Frame Label Space | Flat 89-way | **Hierarchical (8 super-categories → specific frame)** | Two-stage narrows search space; improves rare-frame recall |
+| Data Strategy | Annotate more | **Annotate + LLM augmentation for rare frames** | LLM-synthetic data bridges the gap for 1-shot frames |
+| Peripheral thresholds | Single global | **Per-frame calibrated threshold** | Improves macro-F1 on imbalanced distribution |
+
+---
+
+### 10.7 Expected Training Regime
+
+Given the above, the recommended training sequence is:
+
+1. **Phase 1 — Backbone warm-up** (frozen backbone, train heads only): Train all three heads for 5–10 epochs with a high learning rate. This avoids catastrophic forgetting of ClimateBERT's climate knowledge before the LoRA layers have stabilized.
+
+2. **Phase 2 — Full fine-tuning with LoRA** (all LoRA parameters + heads): Reduce learning rate (1e-4 to 5e-5) and train for 20–40 epochs with early stopping on validation macro-F1. The three losses are summed: `L = λ₁·L_bio + λ₂·L_frame + λ₃·L_supcon`, with initial values λ₁ = 1.0, λ₂ = 1.0, λ₃ = 0.5 (contrastive loss scaled down to prevent it from dominating early).
+
+3. **Phase 3 — Threshold calibration**: After training, calibrate per-frame peripheral thresholds on the held-out validation set using a grid search over [0.3, 0.7].
+
+**Minimum viable dataset for Phase 2**: Approximately 500 annotated paragraphs with the completed Token Frames column (mapping each token to its specific frame). At this scale, the dual-encoder approach becomes reliably trainable; the BIO head has sufficient B/I examples; and the contrastive head has enough same-frame pairs to form meaningful clusters.
+
+---
+
+### 10.8 Relationship to Published Work & Novelty Position
+
+The closest published systems and how the proposed architecture differs:
+
+| Paper | Task | Method | Difference |
+|---|---|---|---|
+| Badullovich et al. 2025 (*Scientometrics*) | Paragraph frame classification | RoBERTa + flat classifier (4 coarse frames) | No token extraction; no contrastive head; 4× fewer labels |
+| RCIF — Diallo & Zouaq 2025 (*arXiv*) | FrameNet frame detection | RAG-based retrieval (no BIO extraction) | FrameNet frames (universal); no climate domain; no span output |
+| Audibert et al. 2024 (*ECML-PKDD*) | Long-tail multi-label classification | Contrastive loss re-weighting | General NLP; no domain adaptation; no token extraction |
+| Huang et al. 2024 (*arXiv 2410.13439*) | Multi-label soft contrastive loss | Similarity-dissimilarity SupCon | General formulation; not applied to framing or climate |
+| ClimateBERT — Webersinke et al. 2021 | Climate text classification | Domain pre-training | No framing task; no token extraction; no contrastive objective |
+
+**The proposed architecture's unique position**: The *combination* of (1) domain-specific ClimateBERT foundation, (2) fine-grained cognitive frame taxonomy (89 labels), (3) joint BIO span extraction, (4) dual-encoder semantic frame matching designed for large label spaces, and (5) soft SupCon on frame-evoking token pools — applied to climate media discourse — has no direct precedent in the literature. Each individual component has antecedents, but the full pipeline represents a genuinely novel contribution to computational climate communication research.
 
 ---
 
