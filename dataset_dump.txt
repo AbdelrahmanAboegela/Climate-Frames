@@ -1,0 +1,230 @@
+Total rows: 38, Columns: 4
+
+--- Row 1 ---
+TextSegment: Text Segment (Pattern)
+CoreFrame: Core Frame 
+PeripheralFrame:  Peripheral Frame
+Tokens: Tokens
+
+--- Row 2 ---
+TextSegment: Climate change refers to long-term shifts in temperatures and weather patterns. These shifts may be natural, caused by changes in solar activity or volcanic eruptions. However, since the 1800s, human activities have become the dominant driver of climate change, mainly through the burning of fossil fuels such as coal, oil, and gas. These activities release large amounts of greenhouse gases into the atmosphere, intensifying the natural greenhouse effect and leading to rising global temperatures.
+CoreFrame: Causation
+PeripheralFrame: Climate Definition, Emission Generation
+Tokens: long-term shifts, human activities, dominant driver, burning fossil fuels, greenhouse gases
+
+--- Row 3 ---
+TextSegment: Burning fossil fuels generates greenhouse gas emissions that act like a blanket around the Earth, trapping heat and raising global temperatures. The main greenhouse gases responsible for climate change include carbon dioxide and methane, which are released through activities such as driving cars, heating buildings, industrial production, agriculture, and deforestation. Energy production, transport, industry, buildings, and land use are among the major sectors contributing to these emissions.
+CoreFrame: Greenhouse Effect
+PeripheralFrame: Emission Generation, Sectoral Responsibility
+Tokens: trapping heat, blanket, greenhouse gases, energy, transport, industry
+
+--- Row 4 ---
+TextSegment: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as global temperatures rise. This rapid loss of ice is driven primarily by carbon pollution from the burning of fossil fuels, which increases the concentration of greenhouse gases in the atmosphere. These gases trap heat, warming both the air and the oceans, which accelerates ice melt and destabilizes polar environments.
+CoreFrame:  Melting
+PeripheralFrame: Human Causation, Greenhouse Effect, Temperature Rise
+Tokens: melting, shrinking, unprecedented, carbon pollution, trap heat
+
+--- Row 5 ---
+TextSegment: As glaciers and sea ice continue to melt, sea levels rise, increasing the risk of flooding for coastal communities. This process threatens ecosystems, wildlife habitats, and freshwater supplies, placing additional stress on human populations. The loss of ice also reduces the Earth’s ability to reflect sunlight, further accelerating warming and contributing to long-term environmental instability.
+CoreFrame: Threat
+PeripheralFrame: Sea Level Rise ,  Habitat Loss
+Tokens: sea levels rise, flooding, threatens, instability
+
+--- Row 6 ---
+TextSegment: Climate change is making hurricanes stronger, wetter, and more destructive. Warmer ocean temperatures provide additional energy that fuels storms, allowing them to intensify more rapidly and produce heavier rainfall. As global temperatures rise, storms are becoming more frequent and severe, increasing their potential to cause widespread destruction across vulnerable coastal regions.
+CoreFrame: Danger _ Threat 
+PeripheralFrame: Climate Causality, Ocean Warming
+Tokens: stronger, destructive, warmer oceans, intensify, severe
+
+--- Row 7 ---
+TextSegment: These intensified hurricanes destroy homes, damage infrastructure, displace communities, and result in significant loss of life. The economic costs run into billions of dollars, placing heavy burdens on governments, insurance systems, and disaster response agencies. Vulnerable populations often suffer the greatest consequences, highlighting the unequal distribution of climate impacts.
+CoreFrame: Human_Impact
+PeripheralFrame: Economic Loss, Social Vulnerability
+Tokens: destroy, loss of life, billions, burden, vulnerable
+
+--- Row 8 ---
+TextSegment: Greenhouse gases are produced by aviation, industrial activities, agriculture, and transportation, primarily through the combustion of fossil fuels. These gases accumulate in the atmosphere and trap heat, leading to rising global temperatures. The increasing concentration of emissions intensifies the greenhouse effect, accelerating climate change and contributing to widespread environmental disruption.
+CoreFrame: Emission_Generation
+PeripheralFrame: Greenhouse Effect, Industrial Activity
+Tokens: produced, combustion, trap heat, accumulate, emissions
+
+--- Row 9 ---
+TextSegment: Urgent and coordinated action is required to reduce greenhouse gas emissions and limit the impacts of climate change. Governments, businesses, and individuals must adopt sustainable practices, transition to renewable energy, and implement policies that promote environmental responsibility. These measures are essential to prevent irreversible damage and ensure long-term ecological stability.
+CoreFrame: Climate_Action
+PeripheralFrame: Policy Urgency, Sustainability
+Tokens: urgent action, reduce emissions, renewable energy, policies
+
+--- Row 10 ---
+TextSegment: Climate change refers to long-term shifts in global temperature and weather patterns mainly caused by human activities such as burning fossil fuels, industrial production, and deforestation. These activities increase greenhouse gas concentrations in the atmosphere, trapping heat and leading to global warming. Rising temperatures disrupt ecosystems, intensify natural disasters, and threaten human health and food security. Without immediate and coordinated international action, climate change will continue to accelerate, causing irreversible environmental damage and long-term socioeconomic instability worldwide.
+CoreFrame: Causation
+PeripheralFrame: Human Agency, Environmental Impact, Risk
+Tokens: caused, increase, trapping, leading, disrupt, threaten
+
+--- Row 11 ---
+TextSegment: Glaciers and sea ice are melting rapidly due to rising global temperatures. This loss of ice contributes to sea-level rise, increasing the risk of coastal flooding and habitat destruction. Marine ecosystems suffer severe disruption, while freshwater supplies become increasingly unstable. Indigenous communities and wildlife face growing vulnerability as their environments transform. The disappearance of reflective ice surfaces also accelerates warming, creating a feedback loop that further destabilizes Earth’s climate system.
+CoreFrame: Melting
+PeripheralFrame: Vulnerability, Ecosystem Impact, Feedback
+Tokens: melting, contributes, suffer, face, accelerates
+
+--- Row 12 ---
+TextSegment: Climate change is intensifying hurricanes by warming ocean waters and increasing atmospheric moisture. Stronger storms now produce heavier rainfall, higher wind speeds, and more destructive storm surges. These intensified hurricanes cause widespread damage to infrastructure, displace populations, and generate enormous economic losses. Coastal communities are particularly vulnerable, facing repeated exposure to increasingly severe disasters. Scientists warn that failure to reduce greenhouse gas emissions will result in even more frequent and devastating storms in the future.
+CoreFrame: Disaster Intensification_ Threat
+PeripheralFrame: Risk, Human Impact, Economic Loss
+Tokens: intensifying, warming, cause, displace, devastate
+
+--- Row 13 ---
+TextSegment: Greenhouse gases such as carbon dioxide and methane trap heat in the atmosphere, disrupting Earth’s natural energy balance. Human reliance on fossil fuels is the primary contributor to these emissions. Transitioning to renewable energy, improving energy efficiency, and promoting sustainable transportation are essential mitigation strategies. Coordinated climate action across governments, industries, and communities is necessary to stabilize the climate, reduce environmental damage, and protect future generations from catastrophic impacts.
+CoreFrame: Mitigation
+PeripheralFrame: Responsibility, Collective Action, Sustainability
+Tokens: trap, contributing, transitioning, reduce, protect
+
+--- Row 14 ---
+TextSegment: Prolonged droughts linked to climate change severely reduce agricultural productivity, resulting in food shortages and rising prices. Rural populations suffer economic hardship, while urban areas experience supply instability. Water scarcity worsens public health conditions, particularly among vulnerable groups such as children and the elderly. Without adaptive agricultural practices and sustainable water management, climate-driven droughts will increasingly undermine food security and social stability, especially in developing regions.
+CoreFrame: Resource Scarcity
+PeripheralFrame: Vulnerability, Economic Loss, Risk
+Tokens: reduce, shortages, scarcity, undermine
+
+--- Row 15 ---
+TextSegment: Rising sea levels threaten low-lying coastal regions through frequent flooding, erosion, and saltwater intrusion. Entire communities face displacement as homes, farmland, and infrastructure become uninhabitable. Coastal ecosystems such as mangroves and wetlands are also destroyed, reducing natural protection against storms. Without significant adaptation strategies, millions of people may become climate migrants, intensifying humanitarian crises and placing unprecedented strain on global support systems.
+CoreFrame: Inundation
+PeripheralFrame: Displacement, Ecosystem Loss, Risk
+Tokens: threaten, flooding, destroyed, displaced
+
+--- Row 16 ---
+TextSegment: Increasing heatwaves linked to climate change place severe stress on human health systems. Prolonged exposure to extreme heat raises mortality rates, particularly among elderly individuals and outdoor workers. Power grids become overloaded due to increased demand for cooling, while water shortages worsen living conditions. These compounded risks highlight the urgent need for heat-adaptation planning, urban redesign, and effective public health policies.
+CoreFrame: Health Hazard
+PeripheralFrame: Vulnerability, Infrastructure Stress
+Tokens: exposure, raises, overloaded, worsen
+
+--- Row 17 ---
+TextSegment: Renewable energy technologies such as solar and wind power offer sustainable alternatives to fossil fuels. Their widespread adoption reduces greenhouse gas emissions, lowers energy costs over time, and enhances national energy security. Investments in clean energy infrastructure also generate employment and stimulate economic growth. However, achieving large-scale energy transition requires supportive government policies, financial incentives, and international cooperation to overcome technical and economic barriers.
+CoreFrame: Energy Transition
+PeripheralFrame: Sustainability, Economic Development, Innovation
+Tokens: reduce, adoption, invest, stimulate
+
+--- Row 18 ---
+TextSegment: International climate agreements aim to coordinate global efforts to reduce emissions and limit temperature rise. Participating nations commit to shared targets, transparent reporting, and financial assistance for developing countries. These treaties promote cooperation, accountability, and long-term planning. However, political resistance and economic concerns continue to hinder full compliance, undermining the effectiveness of global climate governance.
+CoreFrame: Cooperation
+PeripheralFrame: Accountability, Policy
+Tokens: commit, coordinate, promote, comply
+
+--- Row 19 ---
+TextSegment: Climate-induced migration is increasing as environmental degradation, drought, and flooding destroy livelihoods. Families are forced to abandon their homes in search of safety and stability. Host communities struggle to absorb displaced populations, leading to social tensions and economic pressure. Effective migration policies, humanitarian aid, and international cooperation are critical to protect vulnerable populations and ensure equitable climate adaptation strategies.
+CoreFrame: Forced Migration
+PeripheralFrame: Vulnerability, Human Impact, Justice
+Tokens: forced, abandon, displaced, protect
+
+--- Row 20 ---
+TextSegment: Climate change is intensifying environmental risks that threaten food security, water availability, biodiversity, and economic stability. Rising temperatures and increasing climate variability exacerbate existing inequalities, disproportionately affecting vulnerable populations. Corporate climate action, innovation, and responsible governance are now essential to prevent catastrophic outcomes. Without rapid emission reductions and sustainable practices, climate breakdown will undermine human health, livelihoods, and long-term development. Businesses, governments, and communities must coordinate to ensure a just transition toward resilient and low-carbon economies.
+CoreFrame: Climate Risk Escalation
+PeripheralFrame: Vulnerability, Inequality, Responsibility
+Tokens: intensifying, threaten, exacerbate, undermine
+
+--- Row 21 ---
+TextSegment: Global climate governance relies on cooperation between governments, businesses, and international organizations to drive collective mitigation efforts. Corporate leadership plays a crucial role in scaling renewable energy solutions, reducing emissions, and promoting sustainable finance. Science-based targets guide companies toward credible net-zero pathways. Transparent monitoring and accountability mechanisms ensure progress while encouraging innovation. This coordinated approach strengthens climate resilience, supports sustainable development goals, and promotes equitable economic transitions across global markets.
+CoreFrame: Collective Climate Action
+PeripheralFrame: Governance, Innovation, Accountability
+Tokens: relies, drive, guide, ensure, promote
+
+--- Row 22 ---
+TextSegment: Green spaces within global missions enhance environmental sustainability, human well-being, and ecosystem resilience. Natural areas reduce heat stress, improve air quality, and foster psychological recovery for displaced populations. Integrating biodiversity into humanitarian operations strengthens community adaptation to climate extremes. These ecological strategies promote long-term resilience, reduce disaster vulnerability, and restore degraded landscapes while supporting sustainable peace-building and environmental stewardship.
+CoreFrame: Nature-Based Adaptation
+PeripheralFrame: Health, Ecosystem Restoration, Resilience
+Tokens: enhance, reduce, foster, restore
+
+--- Row 23 ---
+TextSegment: Hurricanes are becoming more destructive as warming oceans provide increased energy for storm development. Higher sea-surface temperatures intensify wind speeds and rainfall, leading to catastrophic flooding and infrastructure collapse. Coastal communities experience severe displacement, economic losses, and rising mortality rates. Scientists warn that without aggressive climate mitigation, extreme hurricanes will grow more frequent and devastating, overwhelming emergency response systems and long-term recovery efforts.
+CoreFrame: Disaster Intensification
+PeripheralFrame: Human Impact, Economic Loss, Risk
+Tokens: intensify, catastrophic, displacement, devastate
+
+--- Row 24 ---
+TextSegment: Climate finance institutions provide critical funding that enables developing countries to implement adaptation and mitigation projects. By mobilizing public and private investments, these organizations promote sustainable land management, biodiversity conservation, and renewable energy deployment. Their governance frameworks support accountability, transparency, and capacity building. Financial mechanisms accelerate climate resilience while strengthening international cooperation and equitable development pathways.
+CoreFrame: Climate Finance Mobilization
+PeripheralFrame: Governance, Sustainability, Equity
+Tokens: provide, mobilizing, promote, accelerate
+
+--- Row 25 ---
+TextSegment: Climate-driven heatwaves are increasing in frequency and intensity, placing unprecedented stress on public health systems. Prolonged exposure elevates risks of dehydration, cardiovascular illness, and heat-related mortality. Urban populations are especially vulnerable due to heat-island effects and limited green infrastructure. Adaptation strategies such as urban cooling, green architecture, and public awareness campaigns are critical to reducing health risks and improving climate resilience.
+CoreFrame: Heat Stress
+PeripheralFrame: Vulnerability, Urban Adaptation, Health Risk
+Tokens: increasing, exposure, elevate, reducing
+
+--- Row 26 ---
+TextSegment: Climate change threatens biodiversity by accelerating habitat destruction, species extinction, and ecosystem imbalance. Rising temperatures and altered rainfall patterns disrupt migration cycles and breeding processes. Conservation initiatives emphasize habitat protection, ecosystem restoration, and sustainable land management to preserve ecological stability. Without immediate intervention, biodiversity loss will compromise ecosystem services essential for food production, climate regulation, and human survival.
+CoreFrame: Biodiversity Loss
+PeripheralFrame: Ecosystem Collapse, Conservation
+Tokens: threatens, disrupt, preserve, compromise
+
+--- Row 27 ---
+TextSegment: Ocean warming intensifies coral bleaching and disrupts marine ecosystems. Elevated temperatures weaken coral resilience, increasing vulnerability to disease and mortality. These changes reduce fish populations and threaten coastal livelihoods. Marine conservation strategies focus on pollution control, sustainable fishing, and reef restoration to protect biodiversity and sustain food security.
+CoreFrame: Marine Ecosystem Degradation
+PeripheralFrame: Livelihood Loss, Conservation, Food Security
+Tokens: intensifies, weaken, threaten, protect
+
+--- Row 28 ---
+TextSegment: Rapid deforestation accelerates greenhouse gas emissions and reduces natural carbon sequestration. Forest loss destabilizes ecosystems, increases soil erosion, and disrupts water cycles. Sustainable forestry and afforestation initiatives aim to restore ecological balance, support biodiversity, and enhance climate mitigation. Community engagement and policy enforcement remain critical to halting destructive land-use practices.
+CoreFrame: Deforestation Impact
+PeripheralFrame: Carbon Sequestration, Conservation, Governance
+Tokens: accelerates, destabilizes, restore, halting
+
+--- Row 29 ---
+TextSegment: Climate migration is increasing as floods, droughts, and storms destroy homes and livelihoods. Displaced populations face social instability, economic insecurity, and health risks. Humanitarian assistance and inclusive adaptation policies are essential to protect climate migrants and reduce conflict potential. Global cooperation is necessary to ensure equitable protection and sustainable resettlement solutions.
+CoreFrame: Forced Migration
+PeripheralFrame: Vulnerability, Justice, Humanitarian Aid
+Tokens: increasing, displaced, protect, ensure
+
+--- Row 30 ---
+TextSegment: Sustainable finance mechanisms redirect capital toward climate-resilient infrastructure, renewable energy, and conservation initiatives. Green investments stimulate economic growth while reducing emissions and environmental degradation. Financial transparency and responsible governance enhance investor confidence and long-term sustainability outcomes.
+CoreFrame: Green Finance
+PeripheralFrame: Economic Development, Accountability
+Tokens: redirect, stimulate, reducing, enhance
+
+--- Row 31 ---
+TextSegment: Climate communication strategies aim to increase public awareness, foster behavioral change, and mobilize social action. Clear messaging highlights risks, promotes sustainable lifestyles, and encourages political engagement. Effective communication empowers communities to participate actively in climate mitigation and adaptation efforts.
+CoreFrame: Climate Communication
+PeripheralFrame: Awareness, Behavioral Change, Civic Engagement
+Tokens: increase, foster, mobilize, empower
+
+--- Row 32 ---
+TextSegment: Ecosystem-based adaptation leverages biodiversity and ecosystem services to reduce climate vulnerability. Restoring wetlands, forests, and mangroves strengthens flood protection, stabilizes soils, and supports food security. These nature-based solutions provide cost-effective and sustainable pathways for climate resilience.
+CoreFrame: Ecosystem Adaptation
+PeripheralFrame: Resilience, Sustainability
+Tokens: leverages, restoring, strengthen
+
+--- Row 33 ---
+TextSegment: Climate-resilient agriculture integrates drought-resistant crops, efficient irrigation, and soil conservation techniques. These practices enhance food security, reduce vulnerability, and stabilize rural livelihoods. Policy support and farmer training remain essential to scaling sustainable agricultural adaptation strategies.
+CoreFrame: Agricultural Adaptation
+PeripheralFrame: Food Security, Livelihood Stability
+Tokens: integrates, enhance, stabilize
+
+--- Row 34 ---
+TextSegment: Renewable energy transitions reduce fossil fuel dependence and lower greenhouse gas emissions. Solar, wind, and hydropower systems promote energy security, economic opportunity, and environmental sustainability. Infrastructure investment and policy incentives accelerate the shift toward decarbonized energy systems.
+CoreFrame: Energy Transition
+PeripheralFrame: Innovation, Sustainability, Economic Growth
+Tokens: reduce, promote, accelerate
+
+--- Row 35 ---
+TextSegment: Climate resilience planning strengthens disaster preparedness, emergency response, and recovery capacity. Infrastructure upgrades, early-warning systems, and community training reduce vulnerability to extreme weather events. Integrated planning ensures long-term adaptation and social stability.
+CoreFrame: Disaster Preparedness
+PeripheralFrame: Risk Management, Infrastructure Protection
+Tokens: strengthens, reduce, ensure
+
+--- Row 36 ---
+TextSegment: Environmental governance establishes legal frameworks that regulate emissions, protect ecosystems, and enforce sustainability standards. Transparent institutions promote accountability and policy compliance, strengthening public trust and climate action effectiveness.
+CoreFrame: Environmental Governance
+PeripheralFrame: Law, Accountability, Regulation
+Tokens: regulate, enforce, strengthen
+
+--- Row 37 ---
+TextSegment: Sustainable urban development integrates green infrastructure, energy-efficient buildings, and climate-resilient transport systems. These strategies reduce emissions, enhance livability, and strengthen urban resilience to climate extremes.
+CoreFrame: Urban Sustainability
+PeripheralFrame: Infrastructure Adaptation, Emission Reduction
+Tokens: integrates, reduce, strengthen
+
+--- Row 38 ---
+TextSegment: International climate agreements coordinate emission reduction targets, financial assistance, and technology transfer. Multilateral cooperation fosters trust, accountability, and collective responsibility in addressing global climate challenges.
+CoreFrame: International Cooperation
+PeripheralFrame: Governance, Equity, Accountability
+Tokens: coordinate, foster, addressing
+

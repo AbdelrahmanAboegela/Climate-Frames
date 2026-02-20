@@ -1,0 +1,5 @@
+k-NN Probing Classifier — LOO-CV
+========================================
+1-NN Core Frame Accuracy: 16.2%
+3-NN Core Frame Accuracy: 0.0%
+NN Frame Overlap Rate: 64.9%

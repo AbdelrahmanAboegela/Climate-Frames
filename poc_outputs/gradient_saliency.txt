@@ -1,0 +1,48 @@
+
+  Paragraph 0 — Frame: Causation
+  Text: Climate change refers to long-term shifts in temperatures and weather patterns. ...
+  Frame tokens: {'greenhouse gases', 'dominant driver', 'human activities', 'long-term shifts', 'burning fossil fuels'}
+  Top-10 salient tokens:
+      #1: "." = 1.000
+      #2: "However" = 0.851
+      #3: "<s>" = 0.776
+      #4: "These" = 0.741
+      #5: "," = 0.633
+      #6: "." = 0.583
+      #7: "." = 0.510
+      #8: "</s>" = 0.491
+    ★ #9: "shifts" = 0.476
+      #10: "refers" = 0.448
+  Saliency ratio (frame/non-frame): 0.87x
+
+  Paragraph 2 — Frame: Melting
+  Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as ...
+  Frame tokens: {'shrinking', 'melting', 'trap heat', 'unprecedented', 'carbon pollution'}
+  Top-10 salient tokens:
+      #1: "polar" = 1.000
+      #2: "Arctic" = 0.899
+      #3: "<s>" = 0.836
+      #4: "," = 0.817
+      #5: "," = 0.658
+      #6: "which" = 0.598
+      #7: "which" = 0.534
+    ★ #8: "pollution" = 0.491
+      #9: "ice" = 0.470
+      #10: "environments" = 0.461
+  Saliency ratio (frame/non-frame): 0.89x
+
+  Paragraph 4 — Frame: Danger_Threat
+  Text: Climate change is making hurricanes stronger, wetter, and more destructive. Warm...
+  Frame tokens: {'severe', 'stronger', 'intensify', 'destructive', 'warmer oceans'}
+  Top-10 salient tokens:
+      #1: "." = 1.000
+      #2: "coastal" = 0.709
+      #3: "hurricanes" = 0.605
+      #4: "<s>" = 0.491
+      #5: "fuels" = 0.445
+      #6: "temperatures" = 0.394
+      #7: "storms" = 0.386
+    ★ #8: "War" = 0.385
+      #9: "storms" = 0.370
+      #10: "provide" = 0.365
+  Saliency ratio (frame/non-frame): 1.13x

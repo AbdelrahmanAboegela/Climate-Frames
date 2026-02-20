@@ -1,0 +1,116 @@
+Zero-Shot Frame Classification — ClimateBERT Base Model
+=======================================================
+Top-1 Accuracy: 8.1%
+Top-3 Accuracy: 16.2%
+
+✗ True: Causation                           Pred: Nature-Based Adaptation             sim=0.914
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Greenhouse Effect                   Pred: Nature-Based Adaptation             sim=0.902
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Emission_Generation']
+
+✗ True: Melting                             Pred: Marine Ecosystem Degradation        sim=0.916
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Emission_Generation']
+
+✗ True: Threat                              Pred: Marine Ecosystem Degradation        sim=0.934
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+
+✗ True: Danger_Threat                       Pred: Nature-Based Adaptation             sim=0.919
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Human_Impact                        Pred: Nature-Based Adaptation             sim=0.930
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Emission_Generation                 Pred: Marine Ecosystem Degradation        sim=0.916
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Emission_Generation']
+
+✗ True: Climate_Action                      Pred: Nature-Based Adaptation             sim=0.932
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Causation                           Pred: Nature-Based Adaptation             sim=0.903
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Melting                             Pred: Marine Ecosystem Degradation        sim=0.928
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+
+✗ True: Disaster Intensification_Threat     Pred: Marine Ecosystem Degradation        sim=0.911
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+
+✗ True: Mitigation                          Pred: Nature-Based Adaptation             sim=0.918
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Resource Scarcity                   Pred: Nature-Based Adaptation             sim=0.928
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Inundation                          Pred: Nature-Based Adaptation             sim=0.931
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Health Hazard                       Pred: Nature-Based Adaptation             sim=0.933
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Energy Transition                   Pred: Nature-Based Adaptation             sim=0.928
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Cooperation                         Pred: International Cooperation           sim=0.932
+  Top-3: ['International Cooperation', 'Nature-Based Adaptation', 'Marine Ecosystem Degradation']
+
+✗ True: Forced Migration                    Pred: Nature-Based Adaptation             sim=0.935
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Climate Risk Escalation             Pred: Nature-Based Adaptation             sim=0.922
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Collective Climate Action           Pred: Nature-Based Adaptation             sim=0.923
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✓ True: Nature-Based Adaptation             Pred: Nature-Based Adaptation             sim=0.932
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+
+✗ True: Disaster Intensification            Pred: Nature-Based Adaptation             sim=0.924
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Climate Finance Mobilization        Pred: Nature-Based Adaptation             sim=0.931
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Ecosystem Adaptation']
+
+✗ True: Heat Stress                         Pred: Nature-Based Adaptation             sim=0.934
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+
+✗ True: Biodiversity Loss                   Pred: Nature-Based Adaptation             sim=0.931
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+
+✓ True: Marine Ecosystem Degradation        Pred: Marine Ecosystem Degradation        sim=0.933
+  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Ecosystem Adaptation']
+
+✗ True: Deforestation Impact                Pred: Nature-Based Adaptation             sim=0.921
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Forced Migration                    Pred: Nature-Based Adaptation             sim=0.938
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Green Finance                       Pred: Nature-Based Adaptation             sim=0.933
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Climate Communication               Pred: Nature-Based Adaptation             sim=0.944
+  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'International Cooperation']
+
+✗ True: Ecosystem Adaptation                Pred: Nature-Based Adaptation             sim=0.942
+  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+
+✗ True: Agricultural Adaptation             Pred: Nature-Based Adaptation             sim=0.940
+  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Agricultural Adaptation']
+
+✗ True: Energy Transition                   Pred: Nature-Based Adaptation             sim=0.931
+  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+
+✗ True: Disaster Preparedness               Pred: Nature-Based Adaptation             sim=0.944
+  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+
+✗ True: Environmental Governance            Pred: Nature-Based Adaptation             sim=0.935
+  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+
+✗ True: Urban Sustainability                Pred: Nature-Based Adaptation             sim=0.944
+  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+
+✓ True: International Cooperation           Pred: International Cooperation           sim=0.942
+  Top-3: ['International Cooperation', 'Nature-Based Adaptation', 'Marine Ecosystem Degradation']
+

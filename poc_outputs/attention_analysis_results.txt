@@ -1,0 +1,34 @@
+Attention Analysis Results — ClimateBERT Base Model
+==================================================
+
+  Frame: Causation
+  Text: Climate change refers to long-term shifts in temperatures and weather patterns. ...
+  Frame token attention scores:
+    "long-term shifts": 0.005336
+    "human activities": 0.005652
+    "dominant driver": 0.006123
+    "greenhouse gases": 0.004061
+  Avg non-frame token attention: 0.007413
+  Attention ratio (frame/non-frame): 0.71x
+
+  Frame: Greenhouse Effect
+  Text: Burning fossil fuels generates greenhouse gas emissions that act like a blanket ...
+  Frame token attention scores:
+    "trapping heat": 0.006347
+    "blanket": 0.008305
+    "greenhouse gases": 0.004916
+    "transport": 0.004004
+    "industry": 0.003789
+  Avg non-frame token attention: 0.007655
+  Attention ratio (frame/non-frame): 0.71x
+
+  Frame: Melting
+  Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as ...
+  Frame token attention scores:
+    "melting": 0.008747
+    "shrinking": 0.008396
+    "unprecedented": 0.006324
+    "carbon pollution": 0.006710
+    "trap heat": 0.007272
+  Avg non-frame token attention: 0.008577
+  Attention ratio (frame/non-frame): 0.87x
