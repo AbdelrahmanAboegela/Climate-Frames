@@ -29,7 +29,8 @@ warnings.filterwarnings("ignore")
 OUTPUT_DIR = r"e:\Frames\poc_outputs"
 MODEL_NAME = "climatebert/distilroberta-base-climate-f"
 VANILLA_MODEL = "distilroberta-base"
-DATA_PATH = r"e:\Frames\3 Articles Samples Annotation 2026.xlsx"
+DATA_PATH  = r"e:\Frames\12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx"
+SHEET_NAME = "Core and Peripheral Annotations"
 
 
 def normalize_frame(name: str) -> str:
@@ -42,22 +43,24 @@ def normalize_frame(name: str) -> str:
 def load_data(path: str) -> pd.DataFrame:
     import openpyxl
     wb = openpyxl.load_workbook(path)
-    ws = wb["Sheet1"]
+    ws = wb[SHEET_NAME]
     records = []
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
-        text, core, periph, tokens = row
-        if not text:
+        if len(row) < 4 or not row[0]:
             continue
+        text, core, periph, tokens = row[0], row[1], row[2], row[3]
+        frame_roles = row[4] if len(row) > 4 else None
         core_frame = normalize_frame(str(core)) if core else ""
-        periph_frames = [normalize_frame(p) for p in str(periph).split(",") if p.strip()] if periph else []
+        periph_frames = [normalize_frame(p) for p in str(periph).split(";") if p.strip()] if periph else []
         all_frames = [core_frame] + periph_frames
-        token_list = [t.strip().lower() for t in str(tokens).split(",") if t.strip()] if tokens else []
+        token_list = [t.strip().lower() for t in str(tokens).split(";") if t.strip()] if tokens else []
         records.append({
             "text": str(text).strip(),
             "core_frame": core_frame,
             "peripheral_frames": periph_frames,
             "all_frames": all_frames,
             "tokens": token_list,
+            "frame_roles": str(frame_roles).strip() if frame_roles else "",
         })
     return pd.DataFrame(records)
 

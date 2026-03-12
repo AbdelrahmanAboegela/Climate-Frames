@@ -28,7 +28,8 @@ from collections import defaultdict
 warnings.filterwarnings("ignore")
 
 OUT = r"e:\Frames\poc_outputs"
-DATA = r"e:\Frames\3 Articles Samples Annotation 2026.xlsx"
+DATA = r"e:\Frames\12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx"
+SHEET_NAME = "Core and Peripheral Annotations"
 MODEL_NAME = "climatebert/distilroberta-base-climate-f"
 
 os.makedirs(OUT, exist_ok=True)
@@ -39,13 +40,13 @@ os.makedirs(OUT, exist_ok=True)
 # ══════════════════════════════════════════════════════════
 
 def load_data():
-    df = pd.read_excel(DATA, engine="openpyxl", sheet_name="Sheet1", usecols=[0, 1, 2, 3])
-    df.columns = ["Text", "CoreFrame", "PeripheralFrame", "Tokens"]
+    df = pd.read_excel(DATA, engine="openpyxl", sheet_name=SHEET_NAME, usecols=[0, 1, 2, 3, 4])
+    df.columns = ["Text", "CoreFrame", "PeripheralFrame", "Tokens", "FrameRoles"]
     df = df.dropna(subset=["Text"]).reset_index(drop=True)
     records = []
     for _, r in df.iterrows():
         tokens_raw = str(r["Tokens"]) if pd.notna(r["Tokens"]) else ""
-        tokens = [t.strip().lower() for t in tokens_raw.split(",") if t.strip()]
+        tokens = [t.strip().lower() for t in tokens_raw.split(";") if t.strip()]
         core = str(r["CoreFrame"]).strip() if pd.notna(r["CoreFrame"]) else ""
         core = core.replace("_", " ").strip()
         records.append({

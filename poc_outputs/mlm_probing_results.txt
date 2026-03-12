@@ -1,42 +1,42 @@
 MLM Probing Results — ClimateBERT Base Model
 ==================================================
 
-  Frame: Causation
-  Masked token: "long-term shifts"
-  Top predictions: [('shifts', '0.6139'), ('changes', '0.3778'), ('fluctuations', '0.0057'), ('change', '0.0007'), ('extremes', '0.0005')]
+  Frame: Causal and Attribution Effect
+  Masked token: "burning"
+  Top predictions: [('burning', '0.8951'), ('use', '0.0508'), ('combustion', '0.0329'), ('extraction', '0.0109'), ('production', '0.0047')]
 
-  Frame: Causation
-  Masked token: "human activities"
-  Top predictions: [('humans', '0.9923'), ('wildfires', '0.0029'), ('fires', '0.0015'), ('people', '0.0008'), ('Humans', '0.0006')]
+  Frame: Causal and Attribution Effect
+  Masked token: "fossil fuels"
+  Top predictions: [('energy', '0.4026'), ('fuel', '0.1645'), ('coal', '0.1205'), ('commodities', '0.1005'), ('products', '0.0735')]
 
-  Frame: Greenhouse Effect
-  Masked token: "trapping heat"
-  Top predictions: [('warming', '0.2468'), ('heating', '0.1208'), ('melting', '0.1179'), ('trapping', '0.0899'), ('cooling', '0.0722')]
+  Frame: Causal and Attribution Effect
+  Masked token: "agriculture"
+  Top predictions: [('agriculture', '0.3111'), ('deforestation', '0.1909'), ('mining', '0.1373'), ('shipping', '0.0557'), ('manufacturing', '0.0320')]
 
-  Frame: Greenhouse Effect
-  Masked token: "blanket"
-  Top predictions: [('blanket', '0.6029'), ('lid', '0.0273'), ('funnel', '0.0263'), ('wildfire', '0.0246'), ('fire', '0.0199')]
+  Frame: Causal and Attribution Effect
+  Masked token: "burning"
+  Top predictions: [('Using', '0.9626'), ('burning', '0.0216'), ('Burning', '0.0027'), ('The', '0.0017'), ('Use', '0.0015')]
 
-  Frame: Melting
-  Masked token: "melting"
-  Top predictions: [('melting', '0.6588'), ('retreating', '0.0908'), ('disappearing', '0.0596'), ('shrinking', '0.0496'), ('warming', '0.0353')]
+  Frame: Causal and Attribution Effect
+  Masked token: "burning"
+  Top predictions: [('burning', '0.9569'), ('combustion', '0.0361'), ('use', '0.0041'), ('production', '0.0013'), ('extraction', '0.0011')]
 
-  Frame: Melting
-  Masked token: "shrinking"
-  Top predictions: [('disappearing', '0.7213'), ('retreating', '0.0812'), ('melting', '0.0545'), ('shrinking', '0.0468'), ('dying', '0.0213')]
+  Frame: Causal and Attribution Effect
+  Masked token: "carbon pollution"
+  Top predictions: [('warming', '0.6439'), ('heat', '0.1418'), ('carbon', '0.0700'), ('heating', '0.0484'), ('wildfires', '0.0127')]
 
-  Frame: Threat
-  Masked token: "sea levels rise"
-  Top predictions: [('too', '0.3316'), ('fast', '0.0605'), ('globally', '0.0403'), ('melting', '0.0377'), ('inland', '0.0314')]
+  Frame: Impact and Consequences
+  Masked token: "accelerating"
+  Top predictions: [('accelerating', '0.3935'), ('global', '0.1235'), ('increasing', '0.1072'), ('fueling', '0.0560'), ('enhancing', '0.0506')]
 
-  Frame: Threat
-  Masked token: "flooding"
-  Top predictions: [('erosion', '0.1579'), ('damage', '0.0916'), ('collapse', '0.0769'), ('disasters', '0.0769'), ('disaster', '0.0710')]
+  Frame: Impact and Consequences
+  Masked token: "ecosystem"
+  Top predictions: [('livelihood', '0.9796'), ('watershed', '0.0190'), ('fisher', '0.0011'), ('lawn', '0.0001'), ('playground', '0.0000')]
 
-  Frame: Danger_Threat
-  Masked token: "stronger"
-  Top predictions: [('stronger', '0.7884'), ('hotter', '0.0922'), ('warmer', '0.0394'), ('bigger', '0.0332'), ('larger', '0.0121')]
+  Frame: Impact and Consequences
+  Masked token: "destruction"
+  Top predictions: [('damage', '0.8501'), ('devastation', '0.0528'), ('destruction', '0.0265'), ('damages', '0.0147'), ('displacement', '0.0105')]
 
-  Frame: Danger_Threat
-  Masked token: "destructive"
-  Top predictions: [('destructive', '0.2106'), ('intense', '0.1658'), ('dangerous', '0.1544'), ('frequent', '0.1257'), ('powerful', '0.1117')]
+  Frame: Impact and Consequences
+  Masked token: "heavier rainfall"
+  Top predictions: [('damage', '0.2338'), ('more', '0.1660'), ('hurricanes', '0.0794'), ('rain', '0.0599'), ('stronger', '0.0546')]

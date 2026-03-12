@@ -1,34 +1,40 @@
 Attention Analysis Results — ClimateBERT Base Model
 ==================================================
 
-  Frame: Causation
+  Frame: Causal and Attribution Effect
   Text: Climate change refers to long-term shifts in temperatures and weather patterns. ...
   Frame token attention scores:
-    "long-term shifts": 0.005336
+    "burning": 0.008046
+    "fossil fuels": 0.004457
     "human activities": 0.005652
-    "dominant driver": 0.006123
-    "greenhouse gases": 0.004061
-  Avg non-frame token attention: 0.007413
-  Attention ratio (frame/non-frame): 0.71x
+  Avg non-frame token attention: 0.007278
+  Attention ratio (frame/non-frame): 0.83x
 
-  Frame: Greenhouse Effect
+  Frame: Causal and Attribution Effect
   Text: Burning fossil fuels generates greenhouse gas emissions that act like a blanket ...
   Frame token attention scores:
-    "trapping heat": 0.006347
-    "blanket": 0.008305
+    "agriculture": 0.005538
+    "deforestation": 0.006665
+    "emissions": 0.005952
+    "fossil fuels": 0.004941
+    "greenhouse gas": 0.004775
     "greenhouse gases": 0.004916
-    "transport": 0.004004
-    "industry": 0.003789
-  Avg non-frame token attention: 0.007655
-  Attention ratio (frame/non-frame): 0.71x
+    "heat": 0.006267
+    "industrial production": 0.004955
+  Avg non-frame token attention: 0.007863
+  Attention ratio (frame/non-frame): 0.70x
 
-  Frame: Melting
+  Frame: Causal and Attribution Effect
   Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as ...
   Frame token attention scores:
-    "melting": 0.008747
-    "shrinking": 0.008396
-    "unprecedented": 0.006324
+    "burning": 0.008417
     "carbon pollution": 0.006710
+    "fossil fuels": 0.005316
+    "greenhouse gases": 0.005267
+    "heat": 0.006920
+    "ice melt": 0.006507
+    "melting": 0.008747
     "trap heat": 0.007272
-  Avg non-frame token attention: 0.008577
-  Attention ratio (frame/non-frame): 0.87x
+    "warming": 0.009212
+  Avg non-frame token attention: 0.008994
+  Attention ratio (frame/non-frame): 0.80x

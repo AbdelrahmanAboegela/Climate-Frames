@@ -1,116 +1,701 @@
 Zero-Shot Frame Classification — ClimateBERT Base Model
 =======================================================
-Top-1 Accuracy: 8.1%
-Top-3 Accuracy: 16.2%
+Top-1 Accuracy: 19.0%
+Top-3 Accuracy: 37.5%
 
-✗ True: Causation                           Pred: Nature-Based Adaptation             sim=0.914
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.937
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
 
-✗ True: Greenhouse Effect                   Pred: Nature-Based Adaptation             sim=0.902
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Emission_Generation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.921
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Melting                             Pred: Marine Ecosystem Degradation        sim=0.916
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Emission_Generation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.932
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Threat                              Pred: Marine Ecosystem Degradation        sim=0.934
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.949
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
 
-✗ True: Danger_Threat                       Pred: Nature-Based Adaptation             sim=0.919
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.934
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
 
-✗ True: Human_Impact                        Pred: Nature-Based Adaptation             sim=0.930
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
 
-✗ True: Emission_Generation                 Pred: Marine Ecosystem Degradation        sim=0.916
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Emission_Generation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.938
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
 
-✗ True: Climate_Action                      Pred: Nature-Based Adaptation             sim=0.932
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Causation                           Pred: Nature-Based Adaptation             sim=0.903
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.926
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Melting                             Pred: Marine Ecosystem Degradation        sim=0.928
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Disaster Intensification_Threat     Pred: Marine Ecosystem Degradation        sim=0.911
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.930
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
 
-✗ True: Mitigation                          Pred: Nature-Based Adaptation             sim=0.918
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.936
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Resource Scarcity                   Pred: Nature-Based Adaptation             sim=0.928
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.944
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
 
-✗ True: Inundation                          Pred: Nature-Based Adaptation             sim=0.931
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Health Hazard                       Pred: Nature-Based Adaptation             sim=0.933
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.948
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Energy Transition                   Pred: Nature-Based Adaptation             sim=0.928
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Cooperation                         Pred: International Cooperation           sim=0.932
-  Top-3: ['International Cooperation', 'Nature-Based Adaptation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Forced Migration                    Pred: Nature-Based Adaptation             sim=0.935
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✗ True: Climate Risk Escalation             Pred: Nature-Based Adaptation             sim=0.922
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.941
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✗ True: Collective Climate Action           Pred: Nature-Based Adaptation             sim=0.923
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.940
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✓ True: Nature-Based Adaptation             Pred: Nature-Based Adaptation             sim=0.932
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.941
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✗ True: Disaster Intensification            Pred: Nature-Based Adaptation             sim=0.924
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.939
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Climate Finance Mobilization        Pred: Nature-Based Adaptation             sim=0.931
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Ecosystem Adaptation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Heat Stress                         Pred: Nature-Based Adaptation             sim=0.934
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.949
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Biodiversity Loss                   Pred: Nature-Based Adaptation             sim=0.931
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'Ecosystem Adaptation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.947
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✓ True: Marine Ecosystem Degradation        Pred: Marine Ecosystem Degradation        sim=0.933
-  Top-3: ['Marine Ecosystem Degradation', 'Nature-Based Adaptation', 'Ecosystem Adaptation']
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.945
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Deforestation Impact                Pred: Nature-Based Adaptation             sim=0.921
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.937
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Forced Migration                    Pred: Nature-Based Adaptation             sim=0.938
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✗ True: Green Finance                       Pred: Nature-Based Adaptation             sim=0.933
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Climate Communication               Pred: Nature-Based Adaptation             sim=0.944
-  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'International Cooperation']
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Ecosystem Adaptation                Pred: Nature-Based Adaptation             sim=0.942
-  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✗ True: Agricultural Adaptation             Pred: Nature-Based Adaptation             sim=0.940
-  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Agricultural Adaptation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Energy Transition                   Pred: Nature-Based Adaptation             sim=0.931
-  Top-3: ['Nature-Based Adaptation', 'International Cooperation', 'Marine Ecosystem Degradation']
+✗ True: Action and Solutions                Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Disaster Preparedness               Pred: Nature-Based Adaptation             sim=0.944
-  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
 
-✗ True: Environmental Governance            Pred: Nature-Based Adaptation             sim=0.935
-  Top-3: ['Nature-Based Adaptation', 'Marine Ecosystem Degradation', 'International Cooperation']
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.953
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
 
-✗ True: Urban Sustainability                Pred: Nature-Based Adaptation             sim=0.944
-  Top-3: ['Nature-Based Adaptation', 'Ecosystem Adaptation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 
-✓ True: International Cooperation           Pred: International Cooperation           sim=0.942
-  Top-3: ['International Cooperation', 'Nature-Based Adaptation', 'Marine Ecosystem Degradation']
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.956
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.960
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.968
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.963
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.953
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.960
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.959
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.958
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.963
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.968
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.961
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.941
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.955
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.956
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Socio-Political and Economic        Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.968
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.956
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Action and Solutions']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.964
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.971
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.961
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.967
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.975
+  Top-3: ['Epistemic and Scientific Research', 'Causal and Attribution Effect', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.943
+  Top-3: ['Epistemic and Scientific Research', 'Causal and Attribution Effect', 'Impact and Consequences']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.968
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.970
+  Top-3: ['Epistemic and Scientific Research', 'Causal and Attribution Effect', 'Socio-Political and Economic']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.965
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Causal and Attribution Effect']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.967
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Action and Solutions']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.973
+  Top-3: ['Epistemic and Scientific Research', 'Causal and Attribution Effect', 'Impact and Consequences']
+
+✗ True: Action and Solutions                Pred: Epistemic and Scientific Research   sim=0.967
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.971
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.961
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.969
+  Top-3: ['Epistemic and Scientific Research', 'Causal and Attribution Effect', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.965
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Socio-Political and Economic        sim=0.970
+  Top-3: ['Socio-Political and Economic', 'Epistemic and Scientific Research', 'Action and Solutions']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.973
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.954
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.961
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.966
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Action and Solutions']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.971
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.974
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.965
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.964
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.964
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.971
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.961
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Socio-Political and Economic        sim=0.947
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Action and Solutions                Pred: Socio-Political and Economic        sim=0.945
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Socio-Political and Economic        Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.931
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.949
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.950
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.949
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Action and Solutions                Pred: Epistemic and Scientific Research   sim=0.958
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.950
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.947
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.940
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.943
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.954
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.959
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.958
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.950
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.948
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.953
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.947
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.955
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.929
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.930
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Action and Solutions                Pred: Epistemic and Scientific Research   sim=0.936
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.935
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.942
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.947
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.941
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.964
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Socio-Political and Economic        sim=0.957
+  Top-3: ['Socio-Political and Economic', 'Epistemic and Scientific Research', 'Action and Solutions']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.961
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.958
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.958
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.956
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.964
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Temporal and Scalar                 Pred: Action and Solutions                sim=0.967
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.956
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.951
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.942
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Socio-Political and Economic        sim=0.951
+  Top-3: ['Socio-Political and Economic', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.944
+  Top-3: ['Socio-Political and Economic', 'Epistemic and Scientific Research', 'Action and Solutions']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.943
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.961
+  Top-3: ['Socio-Political and Economic', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.954
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Action and Solutions']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.951
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.947
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.960
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.941
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.954
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.951
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.932
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.938
+  Top-3: ['Epistemic and Scientific Research', 'Impact and Consequences', 'Action and Solutions']
+
+✓ True: Impact and Consequences             Pred: Impact and Consequences             sim=0.942
+  Top-3: ['Impact and Consequences', 'Epistemic and Scientific Research', 'Action and Solutions']
+
+✓ True: Impact and Consequences             Pred: Impact and Consequences             sim=0.950
+  Top-3: ['Impact and Consequences', 'Causal and Attribution Effect', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.942
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.943
+  Top-3: ['Action and Solutions', 'Impact and Consequences', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.944
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.946
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.952
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.943
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.956
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.953
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.958
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.962
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Temporal and Scalar                 Pred: Epistemic and Scientific Research   sim=0.952
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.958
+  Top-3: ['Epistemic and Scientific Research', 'Socio-Political and Economic', 'Action and Solutions']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.938
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.940
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Socio-Political and Economic        sim=0.950
+  Top-3: ['Socio-Political and Economic', 'Action and Solutions', 'Epistemic and Scientific Research']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Socio-Political and Economic        Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.951
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.953
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Socio-Political and Economic        Pred: Epistemic and Scientific Research   sim=0.948
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✓ True: Epistemic and Scientific Research   Pred: Epistemic and Scientific Research   sim=0.958
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✓ True: Action and Solutions                Pred: Action and Solutions                sim=0.961
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.946
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.949
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Impact and Consequences']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.945
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Epistemic and Scientific Research   Pred: Action and Solutions                sim=0.952
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.956
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Action and Solutions                sim=0.944
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Causal and Attribution Effect       Pred: Epistemic and Scientific Research   sim=0.947
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Action and Solutions                sim=0.957
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.956
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Socio-Political and Economic']
+
+✗ True: Impact and Consequences             Pred: Epistemic and Scientific Research   sim=0.954
+  Top-3: ['Epistemic and Scientific Research', 'Action and Solutions', 'Impact and Consequences']
+
+✗ True: Temporal and Scalar                 Pred: Action and Solutions                sim=0.961
+  Top-3: ['Action and Solutions', 'Epistemic and Scientific Research', 'Socio-Political and Economic']
+
+✗ True: Socio-Political and Economic        Pred: Action and Solutions                sim=0.948
+  Top-3: ['Action and Solutions', 'Socio-Political and Economic', 'Epistemic and Scientific Research']
 

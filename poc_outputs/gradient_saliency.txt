@@ -1,7 +1,7 @@
 
-  Paragraph 0 — Frame: Causation
+  Paragraph 0 — Frame: Causal and Attribution Effect
   Text: Climate change refers to long-term shifts in temperatures and weather patterns. ...
-  Frame tokens: {'greenhouse gases', 'dominant driver', 'human activities', 'long-term shifts', 'burning fossil fuels'}
+  Frame tokens: {'fossil fuels', 'human activities', 'burning', 'greenhouse gas', 'temperature'}
   Top-10 salient tokens:
       #1: "." = 1.000
       #2: "However" = 0.851
@@ -11,13 +11,13 @@
       #6: "." = 0.583
       #7: "." = 0.510
       #8: "</s>" = 0.491
-    ★ #9: "shifts" = 0.476
+      #9: "shifts" = 0.476
       #10: "refers" = 0.448
-  Saliency ratio (frame/non-frame): 0.87x
+  Saliency ratio (frame/non-frame): 0.89x
 
-  Paragraph 2 — Frame: Melting
+  Paragraph 2 — Frame: Causal and Attribution Effect
   Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as ...
-  Frame tokens: {'shrinking', 'melting', 'trap heat', 'unprecedented', 'carbon pollution'}
+  Frame tokens: {'trap heat', 'heat', 'fossil fuels', 'greenhouse gases', 'warming', 'burning', 'carbon pollution', 'melting', 'greenhouse gas', 'glaciers', 'ice melt'}
   Top-10 salient tokens:
       #1: "polar" = 1.000
       #2: "Arctic" = 0.899
@@ -27,22 +27,22 @@
       #6: "which" = 0.598
       #7: "which" = 0.534
     ★ #8: "pollution" = 0.491
-      #9: "ice" = 0.470
+    ★ #9: "ice" = 0.470
       #10: "environments" = 0.461
-  Saliency ratio (frame/non-frame): 0.89x
+  Saliency ratio (frame/non-frame): 1.03x
 
-  Paragraph 4 — Frame: Danger_Threat
+  Paragraph 4 — Frame: Impact and Consequences
   Text: Climate change is making hurricanes stronger, wetter, and more destructive. Warm...
-  Frame tokens: {'severe', 'stronger', 'intensify', 'destructive', 'warmer oceans'}
+  Frame tokens: {'heavier rainfall', 'severe', 'destruction', 'hurricanes', 'storms'}
   Top-10 salient tokens:
       #1: "." = 1.000
       #2: "coastal" = 0.709
-      #3: "hurricanes" = 0.605
+    ★ #3: "hurricanes" = 0.605
       #4: "<s>" = 0.491
       #5: "fuels" = 0.445
       #6: "temperatures" = 0.394
-      #7: "storms" = 0.386
-    ★ #8: "War" = 0.385
-      #9: "storms" = 0.370
+    ★ #7: "storms" = 0.386
+      #8: "War" = 0.385
+    ★ #9: "storms" = 0.370
       #10: "provide" = 0.365
-  Saliency ratio (frame/non-frame): 1.13x
+  Saliency ratio (frame/non-frame): 1.14x

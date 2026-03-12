@@ -26,7 +26,8 @@ warnings.filterwarnings("ignore")
 
 OUTPUT_DIR = r"e:\Frames\poc_outputs"
 MODEL_NAME = "climatebert/distilroberta-base-climate-f"
-DATA_PATH = r"e:\Frames\3 Articles Samples Annotation 2026.xlsx"
+DATA_PATH  = r"e:\Frames\12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx"
+SHEET_NAME = "Core and Peripheral Annotations"
 
 
 def normalize_frame(name: str) -> str:
@@ -39,22 +40,24 @@ def normalize_frame(name: str) -> str:
 def load_data(path: str) -> pd.DataFrame:
     import openpyxl
     wb = openpyxl.load_workbook(path)
-    ws = wb["Sheet1"]
+    ws = wb[SHEET_NAME]
     records = []
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
-        text, core, periph, tokens = row
-        if not text:
+        if len(row) < 4 or not row[0]:
             continue
+        text, core, periph, tokens = row[0], row[1], row[2], row[3]
+        frame_roles = row[4] if len(row) > 4 else None
         core_frame = normalize_frame(str(core)) if core else ""
-        periph_frames = [normalize_frame(p) for p in str(periph).split(",") if p.strip()] if periph else []
+        periph_frames = [normalize_frame(p) for p in str(periph).split(";") if p.strip()] if periph else []
         all_frames = [core_frame] + periph_frames
-        token_list = [t.strip().lower() for t in str(tokens).split(",") if t.strip()] if tokens else []
+        token_list = [t.strip().lower() for t in str(tokens).split(";") if t.strip()] if tokens else []
         records.append({
             "text": str(text).strip(),
             "core_frame": core_frame,
             "peripheral_frames": periph_frames,
             "all_frames": all_frames,
             "tokens": token_list,
+            "frame_roles": str(frame_roles).strip() if frame_roles else "",
         })
     return pd.DataFrame(records)
 
@@ -78,6 +81,26 @@ def embed_texts(texts: list[str], tokenizer, model, device) -> np.ndarray:
 # TEST 1: Zero-Shot Frame Classification
 # ═══════════════════════════════════════════════════════════
 
+def load_token_summary() -> dict:
+    """Load canonical evoking tokens per frame from the Token Summary sheet."""
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(DATA_PATH)
+        if "Token Summary" not in wb.sheetnames:
+            return {}
+        ws = wb["Token Summary"]
+        summary = {}
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            if not row[0]:
+                continue
+            frame = str(row[0]).strip()
+            tokens = str(row[1]).strip() if len(row) > 1 and row[1] else ""
+            summary[frame] = tokens
+        return summary
+    except Exception:
+        return {}
+
+
 def zero_shot_classification(df, tokenizer, model, device):
     """Classify each paragraph by cosine similarity to frame name embeddings."""
     print("\n" + "─" * 55)
@@ -87,14 +110,25 @@ def zero_shot_classification(df, tokenizer, model, device):
     # Collect all unique frames (core + peripheral)
     all_frames = sorted(set(df["core_frame"].tolist()))
 
+    # Load Token Summary for richer descriptions
+    token_summary = load_token_summary()
+
     # Embed all paragraphs
     print("  Embedding paragraphs...")
     para_embs = embed_texts(df["text"].tolist(), tokenizer, model, device)
 
-    # Embed all frame names (treat frame name as a short text)
-    # Use more descriptive prompts for better matching
-    frame_descriptions = [f"This text is about {f.replace('_', ' ').lower()}" for f in all_frames]
-    print(f"  Embedding {len(all_frames)} frame names...")
+    # Build richer frame descriptions using canonical tokens where available
+    frame_descriptions = []
+    for f in all_frames:
+        fname = f.replace("_", " ").lower()
+        canon_tokens = token_summary.get(f, "")
+        if canon_tokens:
+            desc = f"Climate text about {fname}. Key terms: {canon_tokens}"
+        else:
+            desc = f"This text is about {fname} in the context of climate change."
+        frame_descriptions.append(desc)
+
+    print(f"  Embedding {len(all_frames)} frame descriptions...")
     frame_embs = embed_texts(frame_descriptions, tokenizer, model, device)
 
     # Cosine similarity matrix: paragraphs × frames

@@ -1,820 +1,483 @@
-# ClimateBERT Base Model — Proof of Concept Report
+# ClimateBERT Frame Classification — Research Report
 
-**Prepared for**: Linguistics Faculty Review  
-**Date**: February 2026  
-**Model Tested**: ClimateBERT (`distilroberta-base-climate-f`)  
-**Dataset**: 37 annotated paragraphs from 3 climate change articles
+**Project**: Automated Cognitive Frame Classification and Frame-Evoking Token Extraction in Climate Discourse  
+**Model**: `climatebert/distilroberta-base-climate-f` (DistilRoBERTa, 82.4M parameters)  
+**Dataset**: 232 annotated paragraphs — 12 climate change articles, 6 core frames  
+**Status**: Phase 0 complete — base model probing + preliminary fine-tuning
 
 ---
 
 ## Table of Contents
 
-1. [Executive Summary](#1-executive-summary)
-2. [Background: What Is ClimateBERT?](#2-background-what-is-climatebert)
-3. [Key Terminology](#3-key-terminology)
-4. [What We Tested](#4-what-we-tested)
-5. [Findings](#5-findings)
-   - 5.1 Does the model understand climate language?
-   - 5.2 Can it distinguish between different frames?
-   - 5.3 At what level does frame signal exist?
-   - 5.4 How does ClimateBERT compare to a generic model?
-   - 5.5 How does the model distribute its attention?
-6. [Data Quality Issues Found](#6-data-quality-issues-found)
-7. [Data Format Recommendations](#7-data-format-recommendations)
-8. [Technical Details for Reference](#8-technical-details)
-9. [Conclusions and Next Steps](#9-conclusions-and-next-steps)
-10. [Proposed Architecture — Design, Rationale & Handling the Large Label Space](#10-proposed-architecture--design-rationale--handling-the-large-label-space)
-    - 10.1 The Core Architectural Challenge
-    - 10.2 Head 1 — BIO Token Classifier
-    - 10.3 Head 2 — Frame Classification via Dual-Encoder Retrieval
-    - 10.4 Head 3 — Contrastive Token Embedding
-    - 10.5 Handling 89 Distinct Frames — A Five-Layer Strategy
-    - 10.6 Summary of Architectural Recommendations
-    - 10.7 Expected Training Regime
-    - 10.8 Relationship to Published Work & Novelty Position
+1. [Project Overview](#1-project-overview)
+2. [Dataset Description](#2-dataset-description)
+3. [Repository Structure](#3-repository-structure)
+4. [Round 1 — Base Model Embedding Analysis](#4-round-1--base-model-embedding-analysis)
+5. [Round 2 — Zero-Shot Classification & Frame Taxonomy](#5-round-2--zero-shot-classification--frame-taxonomy)
+6. [Round 3 — Layer-wise Probing & Domain Comparison](#6-round-3--layer-wise-probing--domain-comparison)
+7. [Round 4 — Attention Head Analysis](#7-round-4--attention-head-analysis)
+8. [Phase 0 — Fine-Tuning Results](#8-phase-0--fine-tuning-results)
+9. [Key Findings Summary](#9-key-findings-summary)
+10. [Architecture Roadmap](#10-architecture-roadmap)
+11. [Next Steps](#11-next-steps)
 
 ---
 
-## 1. Executive Summary
+## 1. Project Overview
 
-We tested a pre-trained AI language model called **ClimateBERT** to evaluate whether it can serve as the foundation for an automated climate frame classification system. The goal of this system is to:
+### Goal
 
-1. **Take a climate-related paragraph** and predict which cognitive **frames** it evokes (e.g., "Causation", "Melting", "Threat").
-2. **Identify specific words and phrases** within the paragraph that trigger each frame.
-3. **Group similar frame-evoking language together** for analysis.
+Build a system that automatically:
 
-### Key Findings at a Glance
+1. **Classifies the cognitive frame** of a climate change paragraph (e.g., *Causal and Attribution Effect*, *Impact and Consequences*)
+2. **Extracts the specific tokens** within that paragraph that invoke the frame (e.g., *"greenhouse gas emissions"*, *"fossil fuels"*)
+3. **Tags peripheral frames** co-present in the same paragraph (multi-label)
+4. **Assigns frame roles** to extracted tokens (e.g., *Cause*, *Agent*, *Source*)
 
-| Question | Answer |
-|---|---|
-| Does ClimateBERT understand climate language? | **Yes** — it reliably predicts semantically appropriate climate terms (see Section 5.1) |
-| Can it already separate different frames? | **Partially** — similar frames cluster together, but fine-grained boundaries need training (see Section 5.2) |
-| Is it better than a generic language model? | **Yes** — 76% better at separating frame groups than a non-climate model (see Section 5.4) |
-| Can it classify frames without training? | **No** — zero-shot accuracy is only 8.1%; a classification component must be added (see Section 5.2) |
-| Does it pay attention to frame-evoking words? | **Early layers do, but overall no** — frame tokens form a weak internal network, but the final representation is dominated by punctuation (see Section 5.5) |
-| Is the current data format sufficient? | **Mostly** — one critical modification is needed (see Section 7) |
+This is distinct from topic classification (what the text is *about*) — it captures *how* climate change is cognitively framed, grounded in FrameNet and cognitive linguistics theory (Entman 1993, Fillmore 1976).
 
-### The Linguistic Perspective
-From a computational linguistics standpoint, this POC demonstrates that **cognitive framing is already surfacing in the model's unsupervised logic**. While the model was never taught what a "frame" is, its internal mathematical map already groups climate-specific frame-evoking language into distinct semantic neighborhoods. Our proposed next steps move from **observation** (the base model) to **operationalization** (the fine-tuned model), allowing us to automatically detect the subtle linguistic choices that shape climate discourse.
+### Why ClimateBERT
 
-**Verdict**: ClimateBERT is well-suited as the foundation model. Its climate-specific training gives it strong domain understanding. However, the model needs additional training (called "fine-tuning") on frame-annotated data to perform frame classification. Before that training can begin, the annotation format requires one key adjustment.
+`climatebert/distilroberta-base-climate-f` is a DistilRoBERTa model further pre-trained on 2M+ climate-related sentences. It achieves state-of-the-art on climate NLP benchmarks while being 6× smaller than full RoBERTa. Its domain pre-training means it already understands climate-specific terminology before any task-specific fine-tuning.
 
----
+### Relation to Existing Work
 
-## 2. Background: What Is ClimateBERT?
-
-**ClimateBERT** is a language model developed by researchers at ETH Zurich and the University of Zurich. It belongs to a family of models called **BERT** (Bidirectional Encoder Representations from Transformers), which are artificial intelligence systems designed to understand the meaning and context of text.
-
-### How It Works (Simplified)
-
-Imagine a linguistics student who has read over **2 million climate-related paragraphs** from research papers, news articles, corporate reports, and policy documents. After this extensive reading, they have developed a strong intuition for climate language — they understand that "retreating glaciers", "shrinking ice caps", and "melting polar regions" all refer to similar phenomena.
-
-ClimateBERT works similarly. It was trained by processing over 2 million climate-related texts, during which it learned:
-- Which words frequently appear together in climate contexts
-- How climate concepts relate to one another
-- The semantic patterns of climate discourse
-
-The specific version we tested (`distilroberta-base-climate-f`) has **82.4 million parameters** — these are the numerical values the model uses to represent its understanding of language. It uses a vocabulary of approximately 50,000 word pieces (see "Subword Tokenization" in Section 3).
-
-### What Is a "Base" Model?
-
-Importantly, this is a **base** model — it has general climate language understanding but has **not** been trained on any specific task. It is analogous to a well-read student who has not yet been given specific instructions on what to look for. Our goal is to assess what this student already understands before we begin specialized training.
-
----
-
-## 3. Key Terminology
-
-The following technical terms appear throughout this report. Each is explained in accessible language.
-
-| Term | Explanation |
-|---|---|
-| **Embedding** | A mathematical representation of a word, sentence, or paragraph as a point in space. Imagine placing every paragraph on a map — paragraphs about similar topics should end up close together. Each paragraph is represented by 768 numbers that define its position. |
-| **Clustering** | The tendency of similar items to form groups on the map. If paragraphs about "Melting" cluster together and separately from "Energy Transition", the model has learned to distinguish these concepts. |
-| **Silhouette Score** | A measure of how well-separated the clusters are, ranging from −1 to +1. A score above 0.5 indicates reasonably distinct groupings. A score near 0 means the groups overlap heavily. |
-| **UMAP** | A visualization method that takes the 768-number representation and projects it onto a 2D plot that humans can view. Think of it as taking a 3D globe and flattening it into a 2D map. |
-| **Cosine Similarity** | A measure of how similar two representations are. A value of 1.0 means identical; 0.5 means moderately similar; 0.0 means unrelated. |
-| **Masked Language Modeling (MLM)** | A fill-in-the-blank test used to probe a model's vocabulary and domain knowledge. Example: "Glaciers are [MASK] at unprecedented rates." |
-| **Attention** | The mechanism by which the model assigns weight to different words in a sentence. An "attention head" is a specialized cognitive path that looks for specific patterns (e.g., one head might look for subjects, another for climate verbs). |
-| **Attention Rollout** | A method to see the cumulative focus of the model across all layers. It allows us to ask: "By the time the model has finished reading, which words ended up being preserved as most important?" |
-| **Entropy (Attention)** | A measure of focus. **Low entropy** means the model is Lasering in on one specific word. **High entropy** means the model is spreading its attention broadly across the whole paragraph. |
-| **Gradient Saliency** | A calculation of influence. It tells us: "If I changed this one word, how much would it change the model's final conclusion?" High saliency words are the 'anchors' of meaning. |
-| **k-Nearest Neighbor (k-NN)** | A classification method: for each paragraph, find the most similar paragraph in the dataset and predict the same label. |
-| **Fine-tuning** | Training a pre-trained model on specific labeled examples (like your 37 paragraphs) to teach it a new skill (like frame classification). |
-| **Subword Tokenization** | How the model breaks text into processable units. For example: "extraordinary" → "extra" + "ordinary". This ensures the model never encounters an "unknown" word, as it can build them from familiar parts. |
-| **Leave-One-Out (LOO-CV)** | A testing method where we test the model's performance on one example after training it on all others, repeating for every item to ensure the results aren't just a fluke of the data split. |
-| **BIO Tagging** | A standard format for labeling words in a sequence: **B**eginning of a term, **I**nside of a term, and **O**utside (everything else). This is the gold standard for "extracting" specific quotes. |
-
----
-
-## 4. What We Tested
-
-We ran **14 tests across 4 rounds**, each designed to answer a specific question about the base model's capabilities. No frame classification training was performed — these tests measure what the model already understands from its climate language pre-training.
-
-### Test Inventory
-
-| # | Test | Question It Answers |
-|---|---|---|
-| 1 | Paragraph Embedding UMAP | Do paragraphs with the same frame naturally cluster together? |
-| 2 | Token Embedding UMAP | Do frame-evoking words from the same frame cluster together? |
-| 3 | Frame Similarity Heatmap | Which frames does the model consider similar to each other? |
-| 4 | Masked Language Modeling | Does the model understand climate domain vocabulary? |
-| 5 | Attention Analysis | Does the model naturally focus on frame-evoking words? |
-| 6 | Zero-Shot Classification | Can the model classify frames without any training? |
-| 7 | Intra vs Inter Similarity | Are same-frame paragraphs more similar than different-frame paragraphs? |
-| 8 | Frame Taxonomy Analysis | How does the model perceive relationships between all 89 frame labels? |
-| 9 | Tokenizer Coverage | How does the model handle multi-word frame expressions? |
-| 10 | Layer-wise Analysis | Where in the model does frame knowledge reside? |
-| 11 | k-NN Probing Classifier | How well can a simple classifier work on these representations? |
-| 12 | Sentence Decomposition | Do individual sentences carry frame signal, or is it paragraph-level? |
-| 13 | ClimateBERT vs Generic Model | Is the climate-specific training actually beneficial? |
-| 14 | Gradient Saliency | Which words truly matter most to the model's understanding? |
-| 15 | Head-level Attention Scores | Which of the 72 attention heads focus on frame-evoking words? |
-| 16 | Attention Rollout | After all layers, how much does the model's representation rely on frame tokens? |
-| 17 | Per-Paragraph Attention Maps | Visually, where does the model look for each paragraph? |
-| 18 | Frame Token Cross-Attention | Do frame-evoking words attend to each other? |
-| 19 | Attention Entropy | How focused vs diffuse are different attention heads? |
-
----
-
-## 5. Findings
-
-### 5.1 Does the Model Understand Climate Language?
-
-**Answer: Yes — demonstrably well.**
-
-#### Fill-in-the-Blank Test (Masked Language Modeling)
-
-We hid key words from climate paragraphs and asked the model to predict what was missing. The results show strong climate domain understanding:
-
-| Hidden Word | Model's Predictions (with confidence) |
-|---|---|
-| **"melting"** (from a paragraph about glaciers) | melting (66%), **retreating** (9%), **disappearing** (6%), **shrinking** (5%) |
-| **"human activities"** (from a causation paragraph) | humans (99%), wildfires, fires |
-| **"trapping heat"** (from a greenhouse effect paragraph) | **warming** (25%), **heating** (12%), melting (12%), trapping (9%) |
-| **"destructive"** (from a hurricane threat paragraph) | destructive (21%), **intense** (17%), **dangerous** (15%), **frequent** (13%) |
-| **"flooding"** (from a sea-level rise paragraph) | **erosion** (16%), damage (9%), collapse (8%), **disasters** (8%) |
-| **"shrinking"** (from a glacier paragraph) | **disappearing** (72%), retreating (8%), melting (5%) |
-
-**Interpretation**: When "melting" is hidden, the model predicts "retreating", "disappearing", and "shrinking" — all semantically coherent alternatives in a climate context. This demonstrates that ClimateBERT has internalized the relationships between climate concepts through **distributional semantics**: it knows these words share similar contexts.
-
-From a linguistic perspective, this means the model understands **frame-evoking collocations**. It doesn't just know the word "melting"; it knows that in the frame of "Glacier Retreat", "melting" is functionally interchangeable with "shrinking" or "retreating". This is crucial because it means the model is already "pre-programmed" with the climate-specific vocabulary that linguists use to identify frames.
-
-#### Token Clustering
-
-Beyond full paragraphs, we mapped the 132 frame-evoking tokens onto a 2D space to see how the model organizes individual words:
-
-![132 Frame-Evoking Tokens colored by Core Frame](poc_outputs/token_umap_core.png)
-
-**Linguistic Insight**: Notice that tokens from the same frame (same color) tend to cluster together even without paragraph context. This confirms that the model's understanding of frame-evoking language is **lexical**—it's built into the way it represents the words themselves.
-
-#### Frame Similarity
-
-The following heatmap shows how similar the model considers each pair of frames to be by comparing the average representation of their paragraphs:
-
-![Frame Cosine Similarity Heatmap](poc_outputs/frame_similarity_heatmap.png)
-
-This map reveals the model's **conceptual hierarchy**. For instance, "Greenhouse Effect" and "Causation" show higher similarity to each other than to "Energy Transition". This matches human linguistic intuition: those two belong to a scientific/causal domain, while energy transition belongs into a socio-political domain.
-
----
-
-### 5.2 Can It Distinguish Between Different Frames?
-
-**Answer: Partially — there is measurable frame separation, but fine-grained classification requires training.**
-
-#### Paragraph Clustering
-
-We placed all 37 paragraphs on a 2D map based on their model representations. The **silhouette score** was **0.55** (scale: −1 to +1, where >0.5 is considered reasonable).
-
-![Paragraph UMAP — CLS Embeddings colored by Core Frame](poc_outputs/paragraph_umap_cls_core.png)
-
-![Paragraph UMAP — Mean-Pooled Embeddings](poc_outputs/paragraph_umap_mean_core.png)
-
-This means that paragraphs with the same core frame tend to be placed near each other, though the clusters are not perfectly separated. For a model that has received **no frame classification training**, this is a strong starting signal.
-
-#### Same-Frame vs Different-Frame Similarity
-
-| Comparison | Average Similarity | Count |
-|---|---|---|
-| Paragraphs with the **same** core frame | 0.9929 | 4 pairs |
-| Paragraphs with **different** core frames | 0.9794 | 662 pairs |
-| **Gap** | **+0.0134** | — |
-
-The gap is small (+0.0134) but **statistically consistent**. This positive gap confirms that frame-related information is "baked into" the model's representations. 
-
-![Intra-Frame vs Inter-Frame Similarity Distribution](poc_outputs/intra_inter_similarity.png)
-
-**Full Depth Analysis**: In the plot above, the 'Intra' distribution (blue) is shifted to the right of the 'Inter' distribution (red). This rightward shift is the proof that being in the same frame category makes two paragraphs mathematically closer. While the overlap is currently large, fine-tuning aims to "pull" those two distributions apart, making the frame boundaries sharp and unambiguous.
-
-#### Nearest Neighbor Classification (The field guide test)
-
-We tested a simple rule: for each paragraph, find the most similar paragraph in the dataset and check if it has the same label. Think of this as identifying a species by finding the most similar bird in a field guide.
-
-| Metric | Result | Meaning |
-|---|---|---|
-| Exact frame match | **16.2%** (6 of 37) | The model correctly identifies the primary frame in 1/6 cases instantly. |
-| Any frame overlap | **64.9%** (24 of 37) | The nearest paragraph shares **at least one** frame label 65% of the time. |
-
-**Linguistic Interpretation**: The 64% overlap rate is our most optimistic finding. It suggests that even when the model misses the exact "bullseye" (Core Frame), it stays within the correct "semantic neighborhood" (Peripheral Frame). The model is already making legitimate linguistic connections between related climate concepts; it just needs supervised training to learn the fine-grained hierarchical boundaries you've defined.
-
-**Interpretation**: The 64.9% frame overlap rate is the most telling result. When the model's nearest neighbor *misses* the exact core frame, it still finds a paragraph with a **related frame** two-thirds of the time. This means the model already understands the "semantic neighborhood" of each frame — it places similar concepts near each other. What it cannot yet do is draw precise boundaries between closely related frames. This is exactly what supervised fine-tuning will achieve.
-
-#### Zero-Shot Classification
-
-We tested whether the model could classify frames without any training, by comparing each paragraph's representation to the representation of each frame name (e.g., "Causation", "Melting"). The result was only **8.1% accuracy**.
-
-This is expected and **not a cause for concern**. Frame names are very short (1–2 words), while paragraphs are long. Their representations exist in different parts of the semantic space. This confirms that a dedicated classification component must be trained on top of the model — the model cannot do frame matching purely through text similarity.
-
----
-
-### 5.3 At What Level Does Frame Signal Exist?
-
-**Answer: Primarily at the paragraph level. Individual sentences carry weaker frame signal.**
-
-We split each paragraph into its constituent sentences and tested whether individual sentences matched their parent paragraph's core frame.
-
-| Level | Frame Match Rate |
-|---|---|
-| Full paragraph | Baseline (100% by definition) |
-| Individual sentences | **20.3%** |
-
-**Key observations**:
-- Some frames are highly consistent at the sentence level — all 4 sentences in a **Causation** paragraph individually matched the Causation frame
-- Frames like **Forced Migration** and **Energy Transition** showed high per-sentence consistency
-- Other frames showed sentences being pulled toward neighboring frames (e.g., individual sentences about "melting" being classified as "Threat" when taken out of context)
-
-**Implication for annotation**: Frame classification should be performed at the **paragraph level**, as individual sentences may lose the contextual cues that invoke a particular frame. However, for **peripheral frame detection** (where a paragraph contains multiple frame signals), sentence-level analysis may help identify which parts of the paragraph correspond to which frame.
-
----
-
-### 5.4 How Does ClimateBERT Compare to a Generic Model?
-
-**Answer: ClimateBERT is measurably superior for climate frame analysis.**
-
-We compared ClimateBERT against its non-climate equivalent (vanilla DistilRoBERTa, which was trained on general English text rather than climate-specific text).
-
-| Metric | ClimateBERT | Generic Model | Advantage |
+| System | Task | Scale | Difference from ours |
 |---|---|---|---|
-| Silhouette score | **0.5273** | 0.5102 | +3.3% |
-| Same-frame vs different-frame gap | **0.0134** | 0.0076 | **+76%** |
-| Nearest neighbor accuracy | 16.2% | 16.2% | Same |
-
-![ClimateBERT vs Vanilla DistilRoBERTa Comparison](poc_outputs/climate_vs_vanilla.png)
-
-**Interpretation**: ClimateBERT provides **76% better frame separation** than the generic model. This confirms that the domain-specific pre-training (reading 2 million climate texts) adds genuine value. The identical nearest-neighbor accuracy (16.2%) means both models find the same "easy" frames — ClimateBERT's advantage is in the quality of the overall representation space, which will compound during fine-tuning.
+| CCF Project (Canada) | Topical frame classification | 9.2M sentences, 65 annotators | Classifies *what topic* (Culture/Science/Economy); no token extraction; 120 siloed models |
+| Otmakhova ACL 2024 | Climate aspect extraction | Sentence-level | No frame classification; no peripheral frames |
+| Badullovich 2025 | Media framing analysis | Document-level | No token extraction; no FrameNet grounding |
+| **This work** | **Cognitive frame + token extraction** | **Paragraph-level** | **Unified multi-head; FrameNet-grounded; peripheral frames + roles** |
 
 ---
 
-### 5.5 How Does the Model Distribute Its Attention?
+## 2. Dataset Description
 
-**Answer: Early layers naturally focus on frame-evoking words, but this signal is lost by the final layer. Frame tokens do attend to each other, forming a weak internal network.**
+### Source
 
-The model has **72 attention heads** (6 layers × 12 heads per layer). Each head learns to focus on different aspects of the text. We analyzed all 72 heads to understand which ones are already sensitive to frame-evoking language.
+**File**: `12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx`  
+**Sheet**: `Core and Peripheral Annotations`
 
-#### Head-level Analysis
+Manually annotated by a team of computational linguists across 12 climate change news articles from Arabic media (translated to English for annotation).
 
-We measured how much each of the 72 heads focuses on frame-evoking words relative to non-frame words:
+### Schema
 
-![Head-level Frame Attention Heatmap (6 layers × 12 heads)](poc_outputs/head_frame_attention.png)
-
-**Interpretation**: The model's early processing stages (Layers 1–2) naturally pay more attention to frame-evoking words — the model has some innate sensitivity to content-bearing words from its climate pre-training. 
-
-**Deep Dive on Layer 1, Head 11**: This specific head showed a **2.16×** focus on frame tokens. In transformer architecture, such heads often act as "content detectors." They have learned that climate nouns and verbs carry the most useful signal for the next layer of processing. 
-
-However, by the later layers, this attention shifts toward structural elements (punctuation, function words). During fine-tuning, the goal is to preserve and amplify this early frame awareness so it propagates into the final classification.
-
-#### Attention Rollout (Cumulative Attention)
-
-When we trace attention through all 6 layers to see the cumulative effect on the model's final representation:
-
-![Attention Rollout — Frame vs Non-Frame per Paragraph](poc_outputs/attention_rollout.png)
-
-- Frame-evoking tokens receive only **0.64×** the cumulative attention of non-frame tokens
-- In **36 of 37** paragraphs, the model's final representation is more influenced by non-frame tokens
-- The most-attended tokens across all paragraphs are **periods and commas**.
-
-**Why Punctuation?**: In base language models, punctuation often acts as a **"sentinel token."** When a model doesn't have a specific task to perform (like classification), it "parks" its attention on punctuation as a neutral storage space for text-wide context. This is a clear indicator that the model is in "idle" mode regarding your frames. Fine-tuning will "unpark" this attention and redirect it toward the frame-evoking words you've annotated.
-
-The following heatmaps show token-level attention for three sample paragraphs:
-
-![P0 (Causation) — Token-level Attention Rollout](poc_outputs/attention_heatmap_P0.png)
-
-![P2 (Melting) — Token-level Attention Rollout](poc_outputs/attention_heatmap_P2.png)
-
-![P15 (Energy Transition) — Token-level Attention Rollout](poc_outputs/attention_heatmap_P15.png)
-
-**Interpretation**: While early layers "see" frame tokens, this signal is diluted by later layers that focus on text structure. This is typical for base language models that were trained for general language understanding rather than any specific task. Fine-tuning will redirect the model's cumulative attention toward frame-relevant language.
-
-#### Do Frame Tokens "Talk" to Each Other?
-
-We measured the attention patterns between different groups of tokens:
-
-![Cross-Attention Matrix — Frame vs Non-Frame Token Interactions](poc_outputs/cross_attention_matrix.png)
-
-| Direction | Attention Level |
-|---|---|
-| Frame token → other frame token | **0.0079** (highest) |
-| Frame token → non-frame token | 0.0071 |
-| Non-frame token → non-frame token | 0.0077 |
-| Non-frame token → frame token | 0.0030 (lowest) |
-
-Frame tokens attend to each other **10.7% more** than they attend to non-frame tokens. This suggests that the model has already formed a weak internal network among frame-evoking words — they "communicate" with each other during processing. This is a positive signal that fine-tuning can strengthen.
-
-#### Attention Entropy
-
-We also measured how focused versus diffuse each of the 72 heads is (entropy analysis):
-
-![Attention Entropy — Head Focus vs Frame Sensitivity](poc_outputs/attention_entropy.png)
-
-Mean entropy: 3.34 bits. Most focused head: L2 H6 (0.66 bits). Most diffuse: L1 H4 (6.02 bits). Correlation between focus and frame preference: 0.065 — no meaningful pattern. Focused heads are not inherently more frame-aware.
-
----
-
-### 5.6 Additional Technical Findings
-
-#### Where Does Frame Knowledge Reside in the Model?
-
-ClimateBERT has 6 internal processing layers. We measured frame separation quality at each layer. Frame knowledge is concentrated in the **last layer** (Layer 6), with silhouette scores increasing monotonically from the first to the last layer.
-
-![Layer-wise Silhouette Scores (Embedding → Layer 6)](poc_outputs/layerwise_silhouette.png)
-
-**Implication**: During fine-tuning, all layers should be adapted — there is no clear point at which to "freeze" early layers.
-
-#### Which Words Does the Model Consider Important?
-
-We tested two measures of word importance:
-
-1. **Attention** (where the model "looks"): Frame-evoking words receive **0.71–0.87x** the attention of average words. This means the model does **not** naturally focus more on frame-evoking words.
-
-2. **Gradient saliency** (what words shape the model's understanding): Frame-evoking words typically ranked around **#8–9** in importance. The model currently focuses on structural elements (punctuation, connectives) and domain-specific nouns ("Arctic", "polar", "hurricanes") rather than specifically on frame-evoking language.
-
-**Implication**: The model does not yet prioritize frame-relevant words. Training with explicit frame labels will redirect the model's focus toward the words that linguists have identified as frame-evoking.
-
-#### How Does the Model Handle Multi-Word Expressions?
-
-The model processes text by breaking words into subword units. We analyzed how frame-evoking tokens are split:
-
-| Category | Percentage |
-|---|---|
-| Kept as a single unit | **26%** (e.g., "melting", "flooding") |
-| Split into multiple units | **74%** (e.g., "unprecedented" → "un" + "pre" + "cedented") |
-
-Multi-word frame-evoking expressions are always split: "burning fossil fuels" becomes 5 subword units, "warmer oceans" becomes 5. This is normal for language models and will be handled by the tagging system.
-
-![Tokenizer Coverage — Single vs Multi-Subword Tokens](poc_outputs/tokenizer_coverage.png)
-
----
-
-## 6. Data Quality Issues Found
-
-During our analysis, we identified several issues in the current annotation that should be addressed before model training.
-
-### 6.1 Duplicate Frame Names (Critical)
-
-The model's frame taxonomy analysis revealed **frame name inconsistencies** — the same conceptual frame appears under different names due to formatting variations:
-
-![Frame Taxonomy UMAP — 89 Frames (blue = core, orange = peripheral)](poc_outputs/frame_taxonomy_umap.png)
-
-![Frame Taxonomy Similarity Heatmap](poc_outputs/frame_taxonomy_heatmap.png)
-
-| Frame Name A | Frame Name B | Model Similarity |
+| Column | Type | Description |
 |---|---|---|
-| Emission Generation | Emission_Generation | 1.000 (identical) |
-| Human Impact | Human_Impact | 1.000 (identical) |
-| Collective Action | Collective Climate Action | 0.994 (near-identical) |
-| Disaster Intensification | Disaster Intensification_Threat | 0.993 (near-identical) |
-| Livelihood Loss | Livelihood Stability | 0.992 (may be distinct?) |
-| Ecosystem Impact | Ecosystem Loss | 0.991 (may be distinct?) |
+| Text Segment | string | Full paragraph text |
+| Core Frame | string | Primary cognitive frame (1 per paragraph) |
+| Peripheral Frames | string (`;`-separated) | Secondary frames co-present |
+| Trigger Tokens | string (`;`-separated) | Words/phrases that invoke the frame |
+| Frame Roles | string (`,`-separated) | Semantic roles (Cause, Agent, Source, etc.) |
 
-**The first four pairs are clearly the same frame with different formatting** (spaces vs underscores, slight wording differences). These must be unified to a single name before training; otherwise, the model will treat them as separate categories, diluting the training signal.
+**Second sheet** — `Token Summary`: 47 rows of canonical frame-evoking tokens per frame, used for zero-shot description enhancement and dictionary-based token extraction.
 
-The last two pairs (Livelihood Loss/Stability, Ecosystem Impact/Loss) may be legitimately distinct frames — this requires linguistic judgment to resolve.
+### Class Distribution
 
-**Note**: We can automatically normalize spacing and underscore issues. The semantic near-duplicates (e.g., "Collective Action" vs "Collective Climate Action") require human review to confirm whether they should be merged.
+| Core Frame | Count | % | Bar |
+|---|---|---|---|
+| Causal and Attribution Effect | 96 | 41.4% | ████████████████████ |
+| Impact and Consequences | 59 | 25.4% | ████████████ |
+| Epistemic and Scientific Research | 29 | 12.5% | ██████ |
+| Action and Solutions | 29 | 12.5% | ██████ |
+| Socio-Political and Economic | 11 | 4.7% | ██ |
+| Temporal and Scalar | 8 | 3.4% | █ |
+| **Total** | **232** | **100%** | |
 
-### 6.2 Large Number of Unique Frames
+**Total annotated frame tokens**: 1,094 across all paragraphs  
+**Imbalance ratio**: 12:1 (Causal vs Temporal)
 
-The dataset contains **89 unique frame labels** (33 core frames + additional peripheral frames) across only 37 paragraphs. Most frames appear only **once or twice** in the dataset. This means:
+### Dataset Sufficiency Assessment
 
-- The model will have very few examples to learn from for most frames
-- Statistical reliability of per-frame performance cannot be established
-- When more data is added, effort should focus on frames that currently have fewer than 3 examples
+| Class | n | LoRA Fine-tune | SetFit/Proto |
+|---|---|---|---|
+| Causal and Attribution Effect | 96 | ✓ Sufficient | ✓ |
+| Impact and Consequences | 59 | ✓ Sufficient | ✓ |
+| Epistemic and Scientific Research | 29 | ⚠ Marginal | ✓ |
+| Action and Solutions | 29 | ⚠ Marginal | ✓ |
+| Socio-Political and Economic | 11 | ✗ Insufficient | ⚠ |
+| Temporal and Scalar | 8 | ✗ Insufficient | ⚠ |
 
-### 6.3 Frame-Evoking Tokens Are Not Mapped to Specific Frames
-
-This is the most important structural issue. **See Section 7 for the full recommendation.**
+**Target for robust full fine-tuning**: ≥100 examples per class (~600 total). Currently at 232 — need ~270 more, concentrated on the two minority classes.
 
 ---
 
-## 7. Data Format Recommendations
+## 3. Repository Structure
 
-### Current Format
+```
+E:\Frames\
+├── 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx   ← MAIN DATASET
+├── V4 12 Articles Annotation Core Peripheral Tokens Role RST....xlsx  ← v4 reference
+├── March26 Summary of Core and Peripheral Frames Fine Tuning...docx   ← taxonomy spec
+├── Sample_Annotation_Format.xlsx                                       ← annotation guide
+├── WhatsApp Image 2026-02-25 at 1.32.10 PM.jpeg                        ← CCF pipeline ref
+│
+├── poc_base_model_analysis.py    ← Round 1: embeddings, silhouette, MLM, attention
+├── poc_round2_analysis.py        ← Round 2: zero-shot, intra/inter sim, taxonomy
+├── poc_round3_analysis.py        ← Round 3: layer-wise, kNN probe, ClimateBERT vs vanilla
+├── poc_round4_attention.py       ← Round 4: attention heads, rollout, entropy
+├── poc_finetune_setfit.py        ← Phase 0: LoRA + prototype fine-tuning
+│
+├── poc_outputs/                  ← All generated figures and text results
+│   ├── paragraph_umap_cls_core.png
+│   ├── paragraph_umap_mean_core.png
+│   ├── token_umap_core.png
+│   ├── frame_similarity_heatmap.png
+│   ├── frame_taxonomy_heatmap.png
+│   ├── frame_taxonomy_umap.png
+│   ├── climate_vs_vanilla.png
+│   ├── layerwise_silhouette.png
+│   ├── intra_inter_similarity.png
+│   ├── tokenizer_coverage.png
+│   ├── head_frame_attention.png
+│   ├── attention_rollout.png
+│   ├── attention_heatmap_P0/P2/P15.png
+│   ├── cross_attention_matrix.png
+│   ├── attention_entropy.png
+│   ├── finetune_comparison.png
+│   ├── finetune_confusion_matrix_lora.png
+│   ├── finetune_confusion_matrix_prototype.png
+│   └── *.txt  (knn_probe_results, zero_shot_results, finetune_cv_results, ...)
+│
+├── ReadMe.md                     ← This document
+└── .gitignore
+```
 
-The current annotation spreadsheet has four columns:
+**Run order**:
+```bash
+python poc_base_model_analysis.py   # ~10 min
+python poc_round2_analysis.py       # ~5 min
+python poc_round3_analysis.py       # ~15 min
+python poc_round4_attention.py      # ~20 min
+python poc_finetune_setfit.py       # ~30 min (GPU recommended)
+```
 
-| Text Segment | Core Frame | Peripheral Frame | Tokens |
+---
+
+## 4. Round 1 — Base Model Embedding Analysis
+
+**Script**: `poc_base_model_analysis.py`
+
+### What it does
+
+Five modules probing the base ClimateBERT model (no fine-tuning):
+
+1. **UMAP of paragraph embeddings** — CLS token and mean-pooled, colored by core frame
+2. **Token-level UMAP** — frame-evoking tokens embedded and clustered
+3. **Frame-to-frame cosine similarity heatmap** — which frames share representational space
+4. **MLM probing** — mask frame tokens, check if model predicts semantically appropriate replacements
+5. **Attention weight analysis** — sample paragraphs, measure attention to frame vs non-frame tokens
+
+### Results
+
+| Metric | Value |
+|---|---|
+| Silhouette score (CLS embeddings, cosine) | **−0.0136** |
+| Silhouette score (mean-pooled embeddings) | **−0.0122** |
+| Frame-evoking tokens extracted | 894 |
+| MLM probes run | 10 |
+
+**Silhouette = −0.0136** means the 6 core frames are **not linearly separable** in the base representation space — paragraphs from different frames are geometrically interleaved. This is a critical finding: **fine-tuning is non-optional**. The base model, despite its climate domain training, cannot distinguish cognitive frames without task-specific supervision.
+
+MLM probing confirmed ClimateBERT understands climate vocabulary: when frame tokens are masked, it predicts semantically coherent replacements (*"emissions"* → *"pollution"*, *"greenhouse gases"*) rather than random words.
+
+**Outputs**: `paragraph_umap_cls_core.png`, `paragraph_umap_mean_core.png`, `token_umap_core.png`, `frame_similarity_heatmap.png`
+
+---
+
+## 5. Round 2 — Zero-Shot Classification & Frame Taxonomy
+
+**Script**: `poc_round2_analysis.py`
+
+### What it does
+
+1. **Zero-shot frame classification** — embed each paragraph and each frame description; classify by cosine similarity. Frame descriptions are enriched using canonical tokens from the Token Summary sheet.
+2. **Intra/inter-frame similarity** — measure cosine similarity within vs. across frame classes
+3. **Frame taxonomy UMAP** — embed frame names + peripheral frames, visualize taxonomic structure
+4. **Tokenizer coverage** — analyse how the RoBERTa tokenizer handles frame-evoking multi-word expressions
+
+### Results
+
+| Metric | Value |
+|---|---|
+| Zero-shot Top-1 Accuracy | **19.0%** |
+| Zero-shot Top-3 Accuracy | **37.5%** |
+| Random baseline | 16.7% |
+| Intra-frame cosine similarity | 0.9763 |
+| Inter-frame cosine similarity | 0.9727 |
+| **Similarity gap (intra − inter)** | **0.0036** |
+| Frame tokens kept whole (1 subword) | 604 / 1094 = **55.2%** |
+| Frame tokens split (multi-subword) | 490 / 1094 = **44.8%** |
+
+**Zero-shot at 19%** is only marginally above random (17%) — the base model embeddings are not discriminative enough for zero-shot frame classification, even with enriched frame descriptions. The intra/inter gap of 0.0036 is very small, confirming frames occupy overlapping regions of the embedding space.
+
+**Tokenizer coverage**: 44.8% of frame-evoking terms are split into multiple subwords (e.g., *"intergenerational justice"* → 7 subwords; *"international cooperation"* → 5 subwords). This motivates mean-pooling over subword spans rather than using single token embeddings for frame-evoking terms.
+
+**Outputs**: `intra_inter_similarity.png`, `frame_taxonomy_heatmap.png`, `frame_taxonomy_umap.png`, `tokenizer_coverage.png`, `zero_shot_results.txt`
+
+---
+
+## 6. Round 3 — Layer-wise Probing & Domain Comparison
+
+**Script**: `poc_round3_analysis.py`
+
+### What it does
+
+1. **Layer-wise silhouette analysis** — extract embeddings from each of the 7 layers (embedding + 6 transformer layers), compute silhouette score. Identifies which layer contains the most frame-discriminative signal.
+2. **k-NN probing (LOO-CV)** — k-nearest-neighbour classifier using leave-one-out cross-validation. Measures whether frames are locally separable even if globally interleaved.
+3. **Sentence decomposition** — split paragraphs into sentences; check whether individual sentences carry the same frame signal as the full paragraph.
+4. **ClimateBERT vs vanilla DistilRoBERTa** — compare all metrics to a non-domain-adapted model to quantify the value of climate pre-training.
+
+### Results
+
+| Metric | ClimateBERT | Vanilla DistilRoBERTa |
+|---|---|---|
+| Silhouette (best layer) | −0.0096 (Layer 1, mean-pool) | −0.0254 |
+| **1-NN Core Frame Accuracy** | **49.1%** | **45.3%** |
+| 3-NN Core Frame Accuracy | 53.4% | — |
+| NN Frame Overlap Rate | 78.0% | — |
+| Intra/inter gap | 0.0036 | 0.0019 |
+| Sentence match rate | 20.1% | — |
+
+**Key findings**:
+
+- **Layer 1 is best** — the earliest transformer layer (closest to raw token embeddings) contains the most frame-discriminative signal. Deep layers (5–6) lose frame specificity to task-agnostic contextual blending. This guides LoRA placement: adapters on layers 1–3 are highest priority.
+- **1-NN at 49.1%** — even though frames are not globally separable (silhouette < 0), they are *locally* separable. Each paragraph's nearest neighbour is more likely to share its frame than not. This validates metric/prototypical learning approaches.
+- **78.0% frame overlap** — even when the exact core frame doesn't match, the nearest neighbour shares at least one frame (core or peripheral). The representational space is semantically structured.
+- **Sentence match rate 20.1%** — individual sentences are poor frame classifiers on their own; frame signal is a paragraph-level phenomenon.
+- **ClimateBERT beats vanilla** on all metrics: +3.8pp on 1-NN accuracy, silhouette nearly 2× better, intra/inter gap 89% larger. Domain pre-training is genuinely beneficial.
+
+**Outputs**: `layerwise_silhouette.png`, `climate_vs_vanilla.png`, `knn_probe_results.txt`, `sentence_decomposition.txt`
+
+---
+
+## 7. Round 4 — Attention Head Analysis
+
+**Script**: `poc_round4_attention.py`
+
+### What it does
+
+Five attention-level tests across all 72 heads (6 layers × 12 heads):
+
+1. **Head-level frame attention** — for each head, compute ratio of attention given to frame vs. non-frame tokens
+2. **Attention rollout** — aggregate attention through all layers to get the effective CLS → token attention
+3. **Per-paragraph attention heatmaps** — token-level visualizations for 3 sample paragraphs
+4. **Frame token cross-attention** — measure how much frame tokens attend to each other (last layer)
+5. **Attention entropy** — diffuseness of attention per head; correlation with frame focus
+
+### Results
+
+| Metric | Value |
+|---|---|
+| Global mean frame attention ratio | **0.675×** |
+| Paragraphs where frame tokens get more attention | 2 / 227 (0.9%) |
+| Attention rollout frame/non-frame ratio | **0.558×** |
+| **Best head** | **Layer 1, Head 7 (4.800×)** |
+| Second best | Layer 1, Head 11 (1.393×) |
+| Heads with ratio > 1.0 (frame-attending) | 5 / 72 (7%) |
+| Worst head | Layer 5, Head 6 (0.042×) |
+| Frame→Frame attention (last layer) | 0.00572 |
+| Frame→Non-frame attention | 0.00876 |
+| F→F / F→NF ratio | **0.653×** (no self-clustering) |
+| Mean attention entropy | 3.25 bits |
+| Entropy vs frame ratio correlation | −0.078 (negligible) |
+
+**Per-layer average attention ratio**:
+
+| Layer | Frame Attention Ratio | Interpretation |
+|---|---|---|
+| 1 | **1.216×** | ✓ Frame-attending |
+| 2 | 0.817× | Neutral |
+| 3 | 0.649× | Below average |
+| 4 | 0.468× | Avoids frame tokens |
+| 5 | 0.256× | Strongly avoids frame tokens |
+| 6 | 0.645× | Below average |
+
+**Key findings**:
+
+- **Only Layer 1 averages above 1.0** — early layers do attend to semantically significant (frame-evoking) tokens, but this signal is progressively diluted in deeper layers.
+- **The base model suppresses frame tokens globally** (mean 0.675×). Punctuation (`.`, `,`) dominates attention rollout — a known artefact of DistilRoBERTa's pre-training on general text.
+- **Layer 1, Head 7 at 4.800×** is a strong frame-attending head that could be a target for LoRA fine-tuning to amplify.
+- **No frame→frame self-clustering** in the last layer (0.653× ratio) — frame-evoking tokens do not form internal semantic networks in the base model. Fine-tuning is required to establish this structure.
+- **Entropy vs frame ratio correlation = −0.078** — more focused heads do not preferentially attend to frame tokens. Frame sensitivity is not driven by attention sharpness alone.
+
+**Outputs**: `head_frame_attention.png`, `attention_rollout.png`, `attention_heatmap_P*.png`, `cross_attention_matrix.png`, `attention_entropy.png`, `round4_attention_results.txt`
+
+---
+
+## 8. Phase 0 — Fine-Tuning Results
+
+**Script**: `poc_finetune_setfit.py`
+
+### Methodology
+
+Two complementary fine-tuning strategies evaluated via **Stratified 5-Fold Cross-Validation** (no held-out test set — too few samples):
+
+**Strategy A — LoRA Fine-Tune**:
+- LoRA adapters (rank=8, α=16, dropout=0.1) on Q and V projections of all 6 layers
+- Only 742,662 trainable parameters out of 83,046,156 total (**0.89%**)
+- Trained with CrossEntropy + class weights inversely proportional to frequency
+- 8 epochs, lr=2e-4, batch size=8, warmup ratio=0.1
+
+**Strategy B — Prototype Classifier (metric learning baseline)**:
+- No gradient updates — zero trainable parameters
+- Build a class centroid from mean-pooled embeddings of training samples
+- Predict via cosine similarity to nearest centroid
+- Pure metric learning; establishes the "free" upper bound for embedding quality
+
+**Strategy C — Dictionary-Based Token Extraction**:
+- Match canonical tokens from Token Summary sheet against paragraph text (exact substring)
+- Evaluates precision/recall/F1 against ground-truth annotated tokens
+
+### Results
+
+#### Frame Classification (5-Fold CV)
+
+| Method | Accuracy | Macro-F1 | Notes |
 |---|---|---|---|
-| "Burning fossil fuels generates greenhouse gas emissions that act like a blanket around the Earth, trapping heat..." | Greenhouse Effect | Emission Generation, Sectoral Responsibility | trapping heat, blanket, greenhouse gases, energy, transport, industry |
+| Random baseline | 16.7% | ~17% | — |
+| Zero-shot (base model) | 19.0% | ~17% | Cosine sim to frame descriptions |
+| Prototype / Cosine (no training) | 45.3% ± 10.7% | 33.9% ± 10.1% | Free metric baseline |
+| **LoRA Fine-Tuned** | **56.1% ± 9.2%** | **42.7% ± 10.2%** | 0.89% trainable params |
 
-### The Problem
+#### Per-Class F1 (LoRA, aggregated across 5 folds)
 
-The **Tokens** column lists all frame-evoking words from the paragraph, but it does **not indicate which token belongs to which frame**. Looking at the example above:
-
-- "trapping heat" and "blanket" → clearly evoke **Greenhouse Effect** (the core frame)
-- "greenhouse gases" → could be **Emission Generation** (a peripheral frame)
-- "energy", "transport", "industry" → these are sectors, evoking **Sectoral Responsibility** (a peripheral frame)
-
-Currently, all six tokens are listed together with no mapping. This creates a problem for model training: the system cannot learn which words signal which frame if the annotations don't specify this relationship.
-
-### What We Are NOT Recommending
-
-To be clear: we are **NOT** asking you to list every word in the paragraph. The current "Tokens" column already correctly contains only the frame-evoking words. **Keep identifying those words exactly as you do now.**
-
-### What We ARE Recommending
-
-Add **one new column** called **"Token Frames"** that specifies, for each token in the "Tokens" column, which frame that token evokes. The order must match the order in the "Tokens" column:
-
-| Text Segment | Core Frame | Peripheral Frame | Tokens | Token Frames *(new)* |
+| Frame | Precision | Recall | F1 | Support |
 |---|---|---|---|---|
-| "Burning fossil fuels generates greenhouse gas emissions that act like a blanket..." | Greenhouse Effect | Emission Generation, Sectoral Responsibility | trapping heat, blanket, greenhouse gases, energy, transport, industry | **Greenhouse Effect, Greenhouse Effect, Emission Generation, Sectoral Responsibility, Sectoral Responsibility, Sectoral Responsibility** |
+| Causal and Attribution Effect | 0.70 | 0.51 | **0.59** | 96 |
+| Impact and Consequences | 0.64 | 0.80 | **0.71** | 59 |
+| Epistemic and Scientific Research | 0.61 | 0.59 | **0.60** | 29 |
+| Action and Solutions | 0.28 | 0.45 | **0.34** | 29 |
+| Socio-Political and Economic | 0.31 | 0.36 | **0.33** | 11 |
+| Temporal and Scalar | 0.00 | 0.00 | **0.00** | 8 |
+| **Macro average** | 0.42 | 0.45 | **0.43** | 232 |
 
-**How to fill this column**: For each comma-separated token in the "Tokens" column, write the corresponding frame name in the same position in "Token Frames":
+#### Token Extraction (Dictionary-Based)
 
-```
-Token 1: "trapping heat"     → Frame 1: "Greenhouse Effect"
-Token 2: "blanket"           → Frame 2: "Greenhouse Effect"  
-Token 3: "greenhouse gases"  → Frame 3: "Emission Generation"
-Token 4: "energy"            → Frame 4: "Sectoral Responsibility"
-Token 5: "transport"         → Frame 5: "Sectoral Responsibility"
-Token 6: "industry"          → Frame 6: "Sectoral Responsibility"
-```
-
-### Why This Matters
-
-Without this mapping, the model training system:
-- Cannot learn to distinguish which words signal which frame
-- Cannot train the token-level extraction component (identifying which specific words evoke each frame)
-- Cannot learn that "trapping heat" and "blanket" belong together (same frame) while "energy" belongs to a different conceptual category
-
-### The Gold Standard: BIO Tagging
-By providing the **Token Frames** column, you allow us to convert your annotations into **BIO Tagging** (Begin, Inside, Outside). This is the standard method used in professional linguistics for Named Entity Recognition (NER) and frame extraction.
-
-Example conversion:
-- Text: "The **melting glaciers** represent a **threat**..."
-- Tags: "O, **B-MELTING, I-MELTING**, O, O, **B-THREAT**"
-
-This structured format allows the AI to learn that frames have **boundaries and structure**, rather than just being a "bag of words." With this modification, we can build a system that highlights the exact text for you in a dashboard.
-
-With this mapping, the system can:
-- Learn frame-specific vocabulary patterns (e.g., that metaphorical language like "blanket" signals Greenhouse Effect)
-- Train a token-level tagger that highlights frame-evoking words and labels each with its specific frame
-- Build embeddings where words from the same frame cluster together
-
-### Additional Recommendations
-
-| Recommendation | Priority | Details |
-|---|---|---|
-| Normalize frame names | **High** | Choose a consistent format: either "Emission Generation" or "Emission_Generation", not both. We can automate this once you confirm the preferred names. |
-| Review near-duplicate frames | **High** | Confirm if pairs like "Collective Action" / "Collective Climate Action" are the same frame or distinct. |
-| Add paragraph IDs | Low | A simple sequential number (P1, P2, ...) to make referencing easier. |
-| Track article source | Low | Note which of the 3 articles each paragraph comes from. |
-
----
-
-## 8. Technical Details for Reference
-
-This section provides additional numerical details for readers interested in the technical specifics.
-
-### Dataset Statistics
-
-| Statistic | Value |
+| Metric | Value |
 |---|---|
-| Total paragraphs | 37 |
-| Total unique core frames | 33 |
-| Total unique frames (core + peripheral) | 89 |
-| Total frame-evoking tokens annotated | 154 |
-| Tokens successfully processed by model | 132 (85.7%) |
-| Frames with ≥ 2 paragraph examples | 4 (Causation, Melting, Energy Transition, Forced Migration) |
-| Average paragraph length | ~3–4 sentences |
+| Precision | 0.000 |
+| Recall | 0.000 |
+| F1 | **0.000** |
 
-### Model Specifications
+Token extraction F1 = 0.0% because the Token Summary canonical tokens (high-level category terms) do not overlap with the paragraph-specific ground-truth annotations (context-specific phrases). This confirms that **dictionary-based extraction is insufficient** — a trained BIO token tagger is required for Phase 1.
 
-| Property | Value |
-|---|---|
-| Model name | climatebert/distilroberta-base-climate-f |
-| Architecture | DistilRoBERTa (6 transformer layers) |
-| Parameters | 82.4 million |
-| Pre-training data | >2 million climate-related paragraphs |
-| Embedding dimension | 768 numbers per text representation |
-| Vocabulary size | ~50,000 subword tokens |
-| Pre-training strategy | FULL-SELECT (selected for best performance by model authors) |
+### Interpretation
 
-### Numerical Results Summary
+- **LoRA jumps from 19% → 56%** with only 0.89% of parameters updated — strong evidence that the fine-tuning direction is correct and the base model has latent frame signal that LoRA unlocks.
+- **Temporal and Scalar (n=8) scores 0.00 F1** — critically under-sampled. The model has no capacity to learn from 6–7 training examples per fold. Annotating 90+ more paragraphs for this class is the highest priority.
+- **Prototype at 45.3%** is a strong free baseline, confirming the metric learning approach (nearest centroid) is viable and worth combining with LoRA in Phase 1.
+- **High fold variance (±9–10%)** is expected at this data scale. Results will stabilise with more data.
 
-| Test | Metric | Value |
+**Outputs**: `finetune_confusion_matrix_lora.png`, `finetune_confusion_matrix_prototype.png`, `finetune_comparison.png`, `finetune_cv_results.txt`
+
+---
+
+## 9. Key Findings Summary
+
+| Finding | Detail | Implication |
 |---|---|---|
-| Paragraph clustering (CLS) | Silhouette score | 0.5496 |
-| Paragraph clustering (Mean-Pooled) | Silhouette score | 0.5273 |
-| Token clustering | Tokens extracted | 132 / 154 |
-| Zero-shot classification | Top-1 accuracy | 8.1% (3/37) |
-| Zero-shot classification | Top-3 accuracy | 16.2% (6/37) |
-| Same-frame similarity | Mean cosine similarity | 0.9929 |
-| Different-frame similarity | Mean cosine similarity | 0.9794 |
-| Similarity gap | Intra − inter | +0.0134 |
-| Any-frame overlap (NN) | Overlap rate | 64.9% (24/37) |
-| 1-NN classification | Accuracy | 16.2% (6/37) |
-| Sentence decomposition | Parent frame match | 20.3% |
-| Attention focus | Frame/non-frame ratio | 0.71–0.87x |
-| Gradient saliency | Frame/non-frame ratio | 0.87–1.13x |
-| ClimateBERT silhouette | Score | 0.5273 |
-| Generic model silhouette | Score | 0.5102 |
-| ClimateBERT separation gap | Intra − inter | 0.0134 |
-| Generic model separation gap | Intra − inter | 0.0076 |
-| Best layer for frame knowledge | Layer | 6 (last) |
-| Head-level frame ratio (L1) | CLS→token attention | 1.084× |
-| Head-level frame ratio (L2) | CLS→token attention | 1.100× |
-| Attention rollout | Frame/non-frame ratio | 0.636× |
-| Frame cross-attention | Frame→Frame / Frame→Non | 1.107× |
-| Attention entropy | Mean across heads | 3.34 bits |
-| Most frame-aware head | Layer 1, Head 11 | 2.161× |
+| **Base model cannot separate frames** | Silhouette = −0.0136 | Fine-tuning is mandatory |
+| **Local structure exists** | 1-NN = 49.1%, frame overlap = 78% | Metric learning viable |
+| **Zero-shot is near-random** | 19.0% vs 17% baseline | Frame semantics not in base embeddings |
+| **Layer 1 is best** | Sil = −0.0096, attention ratio = 1.216× | LoRA priority on early layers |
+| **Domain pre-training helps** | +3.8pp 1-NN vs vanilla | ClimateBERT is the right base |
+| **LoRA works at 232 samples** | 56.1% acc (+37pp vs zero-shot) | Fine-tuning direction confirmed |
+| **Minority classes fail** | Temporal F1 = 0.00 | Need 90+ more annotations each |
+| **Dict-based tokens fail** | F1 = 0.00 | Need trained BIO tagger |
+| **Tokenizer splits 45% of tokens** | 44.8% multi-subword | Mean-pool spans, not single tokens |
+| **Attention suppresses frame tokens** | 0.675× global ratio | Fine-tuning must rewire attention |
 
 ---
 
-## 9. Conclusions and Next Steps
+## 10. Architecture Roadmap
 
-### What We Established
+### Phase 0 — COMPLETE (232 samples)
 
-1. **ClimateBERT is the right foundation**. Its climate pre-training provides measurably better frame separation than a generic model, and its fill-in-the-blank performance demonstrates strong climate domain knowledge.
+- ✅ LoRA (rank=8) sequence classifier — 56.1% accuracy
+- ✅ Prototype cosine classifier — 45.3% accuracy
+- ✅ Dictionary token extraction — 0.0% F1 (baseline established)
 
-2. **The model cannot classify frames without training**. The base model groups similar concepts together but cannot draw precise boundaries between frames. A classification component must be trained.
+### Phase 1 — Target ~500 samples (80+ per class)
 
-3. **Paragraph-level processing is appropriate**. Frame signal is strongest at the paragraph level; individual sentences lose context.
+**Requirements**: Annotate ~270 more paragraphs, prioritising Temporal and Scalar (+92) and Socio-Political (+70).
 
-4. **The data format needs one key modification** before model training can begin: a token-to-frame mapping column.
+**Architecture**:
+```
+ClimateBERT (distilroberta-base-climate-f)
+    + LoRA adapters (rank=16, Q+V, all 6 layers)
+    ├── Head 1: BIO Token Tagger
+    │     Linear(768 → 3) + CRF
+    │     Tags: B-FRAME_EVOKE, I-FRAME_EVOKE, O
+    │     Loss: CRF NLL with class weights
+    └── Head 2: Frame Classifier
+          Linear(768 → 6) on [CLS]
+          Loss: FocalLoss(γ=2) for class imbalance
+Joint loss: 0.3·L_token + 0.7·L_frame
+```
 
-5. **Frame names contain duplicates** that must be resolved.
+**Data augmentation**:
+- Back-translation via Helsinki-NLP/opus-mt-en-de → de-en (frame-evoking tokens kept fixed)
+- EDA (Easy Data Augmentation) on non-frame tokens only
 
-### Recommended Next Steps
+### Phase 2 — Target ~1,000 samples (150+ per class)
 
-| Step | Who | Description |
+**Architecture** (full 3-head):
+```
+ClimateBERT + LoRA (rank=16)
+    ├── Head 1: BIO Token Tagger + CRF
+    ├── Head 2: Core Frame Classifier (FocalLoss)
+    │     + Peripheral Frame Multi-label (BCEWithLogitsLoss)
+    └── Head 3: Contrastive Token Embedding
+          Frame-evoking token spans → MLP(768→256→128) → L2-norm
+          Soft SupCon loss (frame-overlap-weighted similarity)
+Joint loss: λ₁·L_token + λ₂·L_frame + λ₃·L_contrastive
+```
+
+Proper 70/15/15 train/val/test split becomes feasible.
+
+### Architecture Design Principles
+
+| Decision | Choice | Reason |
 |---|---|---|
-| 1. Normalize frame names | Automated (we will provide a script) | Unify spacing/underscore inconsistencies |
-| 2. Review near-duplicate frames | Linguistics team | Decide if "Collective Action" ≈ "Collective Climate Action" (and similar pairs) |
-| 3. Add "Token Frames" column | Annotators | Map each frame-evoking token to its specific frame |
-| 4. Expand dataset | Annotators | Add more annotated paragraphs, especially for frames with only 1–2 examples |
-| 5. Fine-tune the model | Automated | Train the classification and token extraction components |
+| BIO tags | Generic (3 tags) not frame-specific | Too few samples for 18+ tags |
+| Frame classifier | FocalLoss(γ=2) | 12:1 imbalance |
+| LoRA rank | 8 (Phase 0–1), 16 (Phase 2) | Minimal params, strong regularisation |
+| LoRA targets | Q + V projections | Attention rewriting, not MLP |
+| Best layers | 1–3 (highest frame signal) | Layer analysis confirms early layers |
+| Token pooling | Mean over subword span | 44.8% of tokens are multi-subword |
+| Contrastive | Soft SupCon (overlap-weighted) | Handles partial frame overlap |
 
 ---
 
-## 10. Proposed Architecture — Design, Rationale & Handling the Large Label Space
+## 11. Next Steps
 
-This section documents the proposed system architecture for the full frame classification and token extraction pipeline, evaluates its components against the current NLP literature, and provides specific recommendations for the most critical engineering challenge: **89 distinct frame labels with very few training examples per label**.
+### Immediate (data)
+- [ ] Annotate 92 more *Temporal and Scalar* paragraphs (currently only 8)
+- [ ] Annotate 70 more *Socio-Political and Economic* paragraphs (currently only 11)
+- [ ] Resolve annotator disagreement between V4 and 12-Ann counts (Action/Solutions: 63 vs 29)
+- [ ] Fill in empty RST and Date columns in V4 dataset
 
----
+### Immediate (modelling)
+- [ ] Investigate token extraction failure — inspect Token Summary sheet vs ground-truth alignment
+- [ ] Experiment with BIO tagger training on current 232 samples as ablation
+- [ ] Add data augmentation pipeline (back-translation)
 
-### 10.1 The Core Architectural Challenge
+### Phase 1 (once 500 samples available)
+- [ ] Train Phase 1 dual-head LoRA model (BIO + classifier)
+- [ ] Evaluate BIO F1 per frame class
+- [ ] Compare LoRA rank 8 vs 16 on classification accuracy
+- [ ] Report macro-F1 per class with 95% CI (5-fold CV)
 
-The task has three simultaneous goals:
-
-1. **Detect which frames** a paragraph evokes (paragraph-level, multi-label: one core frame + N peripheral frames).
-2. **Locate the specific tokens** that evoke each frame (token-level, sequence labeling).
-3. **Learn a shared embedding space** where paragraphs and tokens with overlapping frames are placed close together, even when direct examples are scarce.
-
-The proposed architecture addresses all three goals via a single shared backbone (ClimateBERT with LoRA adapters) and three specialized output heads. The diagram below shows the full system:
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          Input Paragraph                             │
-└─────────────────────────┬───────────────────────────────────────────┘
-                           │
-              ┌────────────▼────────────┐
-              │  ClimateBERT Tokenizer   │
-              └────────────┬────────────┘
-                           │
-              ┌────────────▼────────────────────────────────────────┐
-              │   Shared Backbone: distilroberta-base-climate-f      │
-              │   (6 Transformer layers, 768-dim hidden states)      │
-              │   + LoRA adapters (r=16, α=32, dropout=0.1)         │
-              └────┬──────────────┬───────────────────┬─────────────┘
-                   │              │                   │
-       ┌───────────▼──┐   ┌───────▼────────┐  ┌──────▼──────────────┐
-       │   HEAD 1      │   │    HEAD 2       │  │      HEAD 3          │
-       │ Token BIO     │   │ Frame Matching  │  │  Contrastive Embed. │
-       │ Classifier    │   │ (Dual-Encoder)  │  │  (Token-Pool SupCon)│
-       └───────────────┘   └────────────────┘  └─────────────────────┘
-       CrossEntropy         InfoNCE / BCE        Soft SupCon (overlap)
-       (weighted, +CRF)     (retrieval loss)     (frame-weighted)
-                   │              │                   │
-                   └──────────────┴───────────────────┘
-                                  │
-                   Total Loss = λ₁·L_bio + λ₂·L_frame + λ₃·L_supcon
-```
+### Publication
+- [ ] Paper draft requires Phase 1 results (trained model F1 scores)
+- [ ] Target: ACL 2027 or EMNLP 2026 (fine-tuning results + annotation study)
+- [ ] Minimum viable contribution: 500 paragraphs + LoRA Phase 1 + ablation study
 
 ---
 
-### 10.2 Head 1 — BIO Token Classifier (Frame-Evoking Span Detection)
+*Report generated: March 2026*  
+*Model: `climatebert/distilroberta-base-climate-f`*  
+*Scripts: 5 POC rounds + Phase 0 fine-tuning*  
+*Outputs: 20 figures, 7 result files*
 
-**What it does**: Takes the per-token hidden states from ClimateBERT and predicts a BIO tag for each token, identifying which words and phrases are frame-evoking.
-
-**Critical design decision — Generic vs. frame-specific BIO:**
-
-| Scheme | Tags | When appropriate |
-|---|---|---|
-| **Generic BIO** (recommended) | `B-FRAME_EVOKE`, `I-FRAME_EVOKE`, `O` | When dataset < 500 paragraphs, or label space > 30 frames |
-| Frame-specific BIO | `B-Melting`, `I-Melting`, `B-Causation`, ... × 89 | Only viable with ≥ 50 examples per frame |
-
-**Recommendation**: Use **generic BIO** (3 tags total) at this stage. With 89 frames and most having only 1–2 annotated paragraphs, frame-specific BIO produces 178 output tags — the vast majority of which will never be seen during training, causing the model to learn nothing about them. The *which frame* question is handled by Head 2; Head 1's job is only to say *whether* a span is frame-evoking.
-
-**Additional recommendation — CRF layer**: Add a Conditional Random Field (CRF) decoding layer on top of the linear projection. CRF enforces valid BIO sequences at no training cost (e.g., prevents `I-FRAME` appearing after `O`, a common failure mode of plain linear decoders). This is the standard choice in all production NER systems and is expected by reviewers.
-
-```
-Per-token hidden states (seq_len × 768)
-    → Linear(768 → 3)
-    → CRF(3 tags: B, I, O)
-    → Loss: Weighted CrossEntropy (O-class weight ≈ 0.1 to counter dominance)
-```
-
----
-
-### 10.3 Head 2 — Frame Classification via Dual-Encoder Retrieval
-
-This is the most important deviation from a naive design, and the single most impactful architectural decision for handling the 89-label problem.
-
-#### The Problem with Flat Softmax over 89 Classes
-
-A conventional approach would be: `CLS embedding → Linear(768 → 89) → Softmax`. This fails here because:
-
-- **Most classes have 1–2 training examples** — the linear layer learns weights for 89 classes from fewer than 10 examples each on average.
-- The model cannot generalize to frames it has never seen or barely seen (**zero-shot / few-shot collapse**).
-- Adding new frames requires retraining the entire head (no open-vocabulary extension).
-- The 89-way loss surface is dominated by the ~4 frames with ≥ 2 examples (Causation, Melting, Energy Transition, Forced Migration), causing all other classes to be predicted near-randomly.
-
-This is a known failure mode documented in the extreme multi-label classification (XMC) literature (Gupta et al., 2023; Wang et al., 2025).
-
-#### The Solution: Dual-Encoder Semantic Frame Matching
-
-Instead of learning a weight vector per class, the model learns to **match paragraphs to frame descriptions** in a shared embedding space. This is the same principle used by retrieval-augmented classifiers and zero-shot XMC systems.
-
-```
-┌─────────────────────────────────────────────────────────┐
-│              Dual-Encoder Frame Matching                 │
-│                                                         │
-│  Paragraph                    Frame Descriptions        │
-│  [CLS] embedding  ←→→→→→→→→→  encode("Causation:        │
-│   (768-dim,             │      the attribution of       │
-│  L2-normalized)         │      climate effects to       │
-│                         │      human activities")       │
-│                         │                               │
-│                         │      encode("Melting:         │
-│                         │      the physical loss of     │
-│                         │      ice mass...")            │
-│                         │                               │
-│                         └─→  cosine_sim(para, frame_i)  │
-│                              for each of the 89 frames  │
-│                                                         │
-│  Core frame  = argmax(similarities)                     │
-│  Peripheral  = {frames | sim > threshold_i}             │
-└─────────────────────────────────────────────────────────┘
-```
-
-**How frame descriptions are created**: The linguistics team writes a one-to-two sentence description for each frame (e.g., *"Causation: language that attributes responsibility for climate change to specific actors, processes, or substances, typically through causal verbs and agent-patient constructions"*). These descriptions are encoded by the same ClimateBERT backbone and cached as fixed-dimensional vectors. No re-training is needed when new frames are added — only a new description vector is computed.
-
-**Training objective**: Instead of cross-entropy, the model is trained with an **InfoNCE / NTXent contrastive retrieval loss**:
-- For each paragraph, the correct frame description is the positive sample.
-- All other frame descriptions in the batch are negatives.
-- The loss pulls the paragraph embedding toward its correct frame description and pushes it away from all others.
-
-```
-L_frame = -log[ exp(sim(para, frame_pos)/τ) / Σ_j exp(sim(para, frame_j)/τ) ]
-```
-
-For **peripheral frames** (multi-label), a binary threshold is applied per frame after training, or a BCE loss is added over similarity scores with per-frame thresholds tuned on validation data.
-
-**Why this works for the large label space**:
-
-| Property | Flat Softmax (89 classes) | Dual-Encoder Matching |
-|---|---|---|
-| Generalizes to 1-shot frames | ✗ No — collapses | ✓ Yes — description provides prior |
-| Handles new frames without retraining | ✗ No | ✓ Yes — add description vector |
-| Interpretable similarity | ✗ No | ✓ Yes — direct cosine score |
-| Works as dataset grows | ✓ Yes | ✓ Yes — improves with data |
-| Handles peripheral frame thresholds | Complex | ✓ Natural (per-frame threshold) |
-
----
-
-### 10.4 Head 3 — Contrastive Token Embedding (Soft Supervised Contrastive Loss)
-
-**What it does**: Takes the hidden states of *only* the frame-evoking tokens (identified by Head 1's BIO predictions), mean-pools them into a single span representation, and projects through a 2-layer MLP into a 128-dimensional embedding space. A soft supervised contrastive loss then trains this space so that:
-
-- Tokens evoking the **same frame** → distance ≈ 0 (positive pairs, weight = 1.0)
-- Tokens evoking **overlapping peripheral frames** → intermediate distance (soft positive, weight = 0.5)
-- Tokens with **no frame overlap** → distance ≈ 1 (negatives, weight = 0.0)
-
-This elegantly handles the multi-label peripheral frame structure: peripheral overlap creates a continuous similarity gradient rather than a hard positive/negative boundary.
-
-```
-Frame-evoking token hidden states (k tokens × 768)
-    → Mean pool → (768,)
-    → MLP: Linear(768→256) → ReLU → Linear(256→128)
-    → L2 normalize → (128,)
-    → Soft SupCon loss (frame-overlap-weighted similarity matrix)
-```
-
-**Important implementation note**: During training, Head 3 uses *gold-annotated* frame-evoking tokens (from the "Tokens" column). At inference, it uses *Head 1's predicted* BIO spans. This train/inference gap should be documented and evaluated explicitly (the performance difference between using gold vs. predicted spans is itself a reportable finding).
-
----
-
-### 10.5 Handling 89 Distinct Frames — A Five-Layer Strategy
-
-This is the single most critical challenge in the project. Below is a prioritized strategy, ordered by expected impact:
-
-#### Layer 1 — Label Description Encoding (Highest Impact)
-As described in Section 10.3, replacing the flat classifier with a dual-encoder approach using linguist-written frame descriptions is the most effective single intervention. It transforms the problem from *"89-class classification with no examples"* into *"similarity matching guided by linguistic knowledge"*, which is dramatically more data-efficient.
-
-**Action required from the linguistics team**: Write a 1–3 sentence description of each frame. The description should include:
-- What the frame represents conceptually
-- The typical linguistic indicators (key verbs, nouns, metaphors)
-- What distinguishes it from its nearest neighbor frames
-
-Example:
-> **Causation**: Frames in which human activities, substances, or processes are presented as causes of climate change effects. Characterized by causal verbs (*cause*, *drive*, *generate*, *lead to*), agent-patient constructions, and explicit attribution language. Distinguished from Greenhouse Effect by the presence of an identified responsible agent.
-
-#### Layer 2 — Hierarchical Frame Grouping (High Impact)
-Group the 89 frames into 6–8 **super-categories** based on their linguistic and thematic relationships. The model then performs two-stage classification:
-1. Predict the **super-category** (6-way classifier — enough data for each).
-2. Within the predicted super-category, predict the **specific frame** (5–15 options instead of 89).
-
-Proposed grouping based on the POC's frame taxonomy analysis (see Section 5.2):
-
-| Super-Category | Candidate Frames |
-|---|---|
-| **Physical Phenomena** | Melting, Glacier Retreat, Sea Level Rise, Flooding, Drought, Ecosystem Degradation... |
-| **Causal Attribution** | Causation, Greenhouse Effect, Emission Generation, Sectoral Responsibility... |
-| **Threat & Risk** | Danger Threat, Disaster Intensification, Climate Risk Escalation, Extreme Weather... |
-| **Human & Social Impact** | Human Impact, Forced Migration, Livelihood Loss, Public Health, Food Security... |
-| **Governance & Policy** | Climate Action, Collective Action, Energy Transition, International Agreements... |
-| **Denial & Uncertainty** | Skepticism, Scientific Uncertainty, Delayed Action... |
-| **Economic Framing** | Economic Cost, Market Solutions, Green Economy... |
-| **Moral & Ethical** | Intergenerational Justice, Climate Justice, Responsibility... |
-
-This hierarchical structure has been shown to outperform flat classifiers on imbalanced multi-class problems (Bertalis et al., 2024; Audibert & Gauffre, 2024).
-
-#### Layer 3 — LLM-Assisted Data Augmentation (High Impact for Rare Frames)
-For frames with only 1–2 annotated examples, use a large language model (e.g., GPT-4o) to generate synthetic training paragraphs. The prompt instructs the LLM to write a climate news paragraph that specifically evokes the target frame using realistic linguistic constructions, without simply paraphrasing the original.
-
-This approach has been validated in few-shot NLP settings and is particularly effective when combined with a dual-encoder classifier, as the synthetic examples help anchor the frame description in a larger portion of embedding space.
-
-**Caution**: Synthetic paragraphs should be clearly labeled as augmented data in any publication and validated by a linguist before use.
-
-#### Layer 4 — Long-Tail Contrastive Loss (Moderate Impact)
-When training Head 3's contrastive objective, apply **frequency-inverse re-weighting** to the frame overlap matrix: rare frames receive higher weight in the loss, preventing the 4 frequent frames (Causation, Melting, Energy Transition, Forced Migration) from dominating the embedding space geometry. This is the approach used by Audibert et al. (2024) for long-tailed multi-label contrastive learning.
-
-#### Layer 5 — Per-Frame Threshold Calibration (Moderate Impact for Peripheral Frames)
-For peripheral frame detection, do not use a single global activation threshold (e.g., sigmoid > 0.5). Instead, calibrate a separate threshold per frame on the validation set, optimized for F1. Rare frames typically need a lower threshold; frequent frames a higher one. This is a standard post-processing step in multi-label classification that significantly improves macro-F1 on imbalanced label distributions.
-
----
-
-### 10.6 Summary of Architectural Recommendations
-
-| Component | Original Proposal | Recommended Modification | Reason |
-|---|---|---|---|
-| Frame Classification Head | Linear(768→89) + CE/BCE | **Dual-encoder** semantic matching + InfoNCE | 89-class flat softmax fails with 1–2 examples per frame |
-| BIO Tag Scheme | Frame-specific (178 tags) | **Generic B/I/O** (3 tags) | Frame-specific tags are unlearnable at current dataset scale |
-| BIO Decoder | Linear | **Linear + CRF** | Enforces valid BIO sequences; standard for NER |
-| Head 3 Token Pool | Gold tokens only | **Differentiable weighting by Head 1 confidence** | Removes train/inference gap; makes system end-to-end |
-| Frame Label Space | Flat 89-way | **Hierarchical (8 super-categories → specific frame)** | Two-stage narrows search space; improves rare-frame recall |
-| Data Strategy | Annotate more | **Annotate + LLM augmentation for rare frames** | LLM-synthetic data bridges the gap for 1-shot frames |
-| Peripheral thresholds | Single global | **Per-frame calibrated threshold** | Improves macro-F1 on imbalanced distribution |
-
----
-
-### 10.7 Expected Training Regime
-
-Given the above, the recommended training sequence is:
-
-1. **Phase 1 — Backbone warm-up** (frozen backbone, train heads only): Train all three heads for 5–10 epochs with a high learning rate. This avoids catastrophic forgetting of ClimateBERT's climate knowledge before the LoRA layers have stabilized.
-
-2. **Phase 2 — Full fine-tuning with LoRA** (all LoRA parameters + heads): Reduce learning rate (1e-4 to 5e-5) and train for 20–40 epochs with early stopping on validation macro-F1. The three losses are summed: `L = λ₁·L_bio + λ₂·L_frame + λ₃·L_supcon`, with initial values λ₁ = 1.0, λ₂ = 1.0, λ₃ = 0.5 (contrastive loss scaled down to prevent it from dominating early).
-
-3. **Phase 3 — Threshold calibration**: After training, calibrate per-frame peripheral thresholds on the held-out validation set using a grid search over [0.3, 0.7].
-
-**Minimum viable dataset for Phase 2**: Approximately 500 annotated paragraphs with the completed Token Frames column (mapping each token to its specific frame). At this scale, the dual-encoder approach becomes reliably trainable; the BIO head has sufficient B/I examples; and the contrastive head has enough same-frame pairs to form meaningful clusters.
-
----
-
-### 10.8 Relationship to Published Work & Novelty Position
-
-The closest published systems and how the proposed architecture differs:
-
-| Paper | Task | Method | Difference |
-|---|---|---|---|
-| Badullovich et al. 2025 (*Scientometrics*) | Paragraph frame classification | RoBERTa + flat classifier (4 coarse frames) | No token extraction; no contrastive head; 4× fewer labels |
-| RCIF — Diallo & Zouaq 2025 (*arXiv*) | FrameNet frame detection | RAG-based retrieval (no BIO extraction) | FrameNet frames (universal); no climate domain; no span output |
-| Audibert et al. 2024 (*ECML-PKDD*) | Long-tail multi-label classification | Contrastive loss re-weighting | General NLP; no domain adaptation; no token extraction |
-| Huang et al. 2024 (*arXiv 2410.13439*) | Multi-label soft contrastive loss | Similarity-dissimilarity SupCon | General formulation; not applied to framing or climate |
-| ClimateBERT — Webersinke et al. 2021 | Climate text classification | Domain pre-training | No framing task; no token extraction; no contrastive objective |
-
-**The proposed architecture's unique position**: The *combination* of (1) domain-specific ClimateBERT foundation, (2) fine-grained cognitive frame taxonomy (89 labels), (3) joint BIO span extraction, (4) dual-encoder semantic frame matching designed for large label spaces, and (5) soft SupCon on frame-evoking token pools — applied to climate media discourse — has no direct precedent in the literature. Each individual component has antecedents, but the full pipeline represents a genuinely novel contribution to computational climate communication research.
-
----
-
-*This report was generated as part of the Climate Frame Classification & Extraction project. Tests were conducted using Python with the HuggingFace Transformers library on a CUDA-enabled GPU.*
