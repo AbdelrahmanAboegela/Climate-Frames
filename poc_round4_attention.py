@@ -24,12 +24,12 @@ import matplotlib.colors as mcolors
 import seaborn as sns
 from transformers import AutoTokenizer, AutoModel
 from collections import defaultdict
+from climate_frames_dataset import DEFAULT_DATA_PATH, find_token_spans, load_annotations
 
 warnings.filterwarnings("ignore")
 
 OUT = r"e:\Frames\poc_outputs"
-DATA = r"e:\Frames\12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx"
-SHEET_NAME = "Core and Peripheral Annotations"
+DATA = str(DEFAULT_DATA_PATH)
 MODEL_NAME = "climatebert/distilroberta-base-climate-f"
 
 os.makedirs(OUT, exist_ok=True)
@@ -40,39 +40,18 @@ os.makedirs(OUT, exist_ok=True)
 # ══════════════════════════════════════════════════════════
 
 def load_data():
-    df = pd.read_excel(DATA, engine="openpyxl", sheet_name=SHEET_NAME, usecols=[0, 1, 2, 3, 4])
-    df.columns = ["Text", "CoreFrame", "PeripheralFrame", "Tokens", "FrameRoles"]
-    df = df.dropna(subset=["Text"]).reset_index(drop=True)
-    records = []
-    for _, r in df.iterrows():
-        tokens_raw = str(r["Tokens"]) if pd.notna(r["Tokens"]) else ""
-        tokens = [t.strip().lower() for t in tokens_raw.split(";") if t.strip()]
-        core = str(r["CoreFrame"]).strip() if pd.notna(r["CoreFrame"]) else ""
-        core = core.replace("_", " ").strip()
-        records.append({
-            "text": str(r["Text"]).strip(),
-            "core_frame": core,
-            "tokens": tokens,
-        })
-    return records
+    df = load_annotations(DATA, dedupe_mode="merge")
+    return df[["text", "core_frame", "tokens"]].to_dict(orient="records")
 
 
 def find_frame_token_positions(text, frame_tokens, tokenizer, encoding):
     """Map frame-evoking tokens to subword positions in the encoding."""
     input_ids = encoding["input_ids"][0]
     all_tokens = tokenizer.convert_ids_to_tokens(input_ids)
-    text_lower = text.lower()
     frame_positions = set()
+    spans = find_token_spans(text, frame_tokens)
 
-    for ft in frame_tokens:
-        ft_lower = ft.lower().strip()
-        # Find character position in original text
-        start = text_lower.find(ft_lower)
-        if start == -1:
-            continue
-        end = start + len(ft_lower)
-
-        # Map character positions to token positions
+    for start, end, _ in spans:
         for idx in range(1, len(all_tokens) - 1):  # skip CLS/SEP
             span = encoding.token_to_chars(0, idx)
             if span is None:
@@ -629,8 +608,9 @@ def main():
     print("  Round 4: Deep Attention Map Analysis")
     print("=" * 60)
 
+    print(f"  Loading dataset: {DATA}")
     records = load_data()
-    print(f"  Loaded {len(records)} paragraphs")
+    print(f"  Loaded {len(records)} merged paragraphs")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"  Device: {device}")

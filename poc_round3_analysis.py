@@ -22,6 +22,7 @@ from transformers import AutoTokenizer, AutoModel, logging as hf_logging
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import silhouette_score
 from collections import Counter
+from climate_frames_dataset import DEFAULT_DATA_PATH, load_annotations
 
 hf_logging.set_verbosity_error()
 warnings.filterwarnings("ignore")
@@ -29,40 +30,11 @@ warnings.filterwarnings("ignore")
 OUTPUT_DIR = r"e:\Frames\poc_outputs"
 MODEL_NAME = "climatebert/distilroberta-base-climate-f"
 VANILLA_MODEL = "distilroberta-base"
-DATA_PATH  = r"e:\Frames\12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx"
-SHEET_NAME = "Core and Peripheral Annotations"
-
-
-def normalize_frame(name: str) -> str:
-    name = name.strip()
-    name = re.sub(r"\s*_\s*", "_", name)
-    name = re.sub(r"\s+", " ", name)
-    return name
+DATA_PATH = str(DEFAULT_DATA_PATH)
 
 
 def load_data(path: str) -> pd.DataFrame:
-    import openpyxl
-    wb = openpyxl.load_workbook(path)
-    ws = wb[SHEET_NAME]
-    records = []
-    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, values_only=True):
-        if len(row) < 4 or not row[0]:
-            continue
-        text, core, periph, tokens = row[0], row[1], row[2], row[3]
-        frame_roles = row[4] if len(row) > 4 else None
-        core_frame = normalize_frame(str(core)) if core else ""
-        periph_frames = [normalize_frame(p) for p in str(periph).split(";") if p.strip()] if periph else []
-        all_frames = [core_frame] + periph_frames
-        token_list = [t.strip().lower() for t in str(tokens).split(";") if t.strip()] if tokens else []
-        records.append({
-            "text": str(text).strip(),
-            "core_frame": core_frame,
-            "peripheral_frames": periph_frames,
-            "all_frames": all_frames,
-            "tokens": token_list,
-            "frame_roles": str(frame_roles).strip() if frame_roles else "",
-        })
-    return pd.DataFrame(records)
+    return load_annotations(path, dedupe_mode="merge")
 
 
 def split_sentences(text: str) -> list[str]:
@@ -586,8 +558,9 @@ def main():
     print("  ClimateBERT POC — Round 3: Deep Probing")
     print("=" * 60)
 
+    print(f"\n📂 Loading dataset: {DATA_PATH}")
     df = load_data(DATA_PATH)
-    print(f"\n📂 Loaded {len(df)} paragraphs")
+    print(f"📂 Loaded {len(df)} merged paragraphs")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"🤖 Loading ClimateBERT on {device}...")

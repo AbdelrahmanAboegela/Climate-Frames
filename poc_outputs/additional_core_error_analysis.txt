@@ -1,0 +1,55 @@
+Additional Core Error Analysis
+============================================================
+Model: Soft-Vote Ensemble
+Mean accuracy: 0.6031 +/- 0.0363
+Mean macro-F1: 0.5395 +/- 0.0495
+
+Per-class recall and F1
+------------------------------------------------------------
+Socio-Political and Economic             recall=0.400 f1=0.343 support=15
+Temporal and Scalar                      recall=0.385 f1=0.400 support=39
+Causal and Attribution Effect            recall=0.532 f1=0.567 support=231
+Impact and Consequences                  recall=0.623 f1=0.615 support=183
+Action and Solutions                     recall=0.651 f1=0.627 support=152
+Epistemic and Scientific Research        recall=0.684 f1=0.670 support=209
+
+Top confusion pairs
+------------------------------------------------------------
+Causal and Attribution Effect       -> Impact and Consequences             count=40
+Causal and Attribution Effect       -> Action and Solutions                count=30
+Causal and Attribution Effect       -> Epistemic and Scientific Research   count=30
+Action and Solutions                -> Causal and Attribution Effect       count=26
+Epistemic and Scientific Research   -> Causal and Attribution Effect       count=26
+Impact and Consequences             -> Epistemic and Scientific Research   count=23
+Impact and Consequences             -> Causal and Attribution Effect       count=22
+Epistemic and Scientific Research   -> Action and Solutions                count=15
+Action and Solutions                -> Impact and Consequences             count=14
+Impact and Consequences             -> Action and Solutions                count=14
+
+Sample errors
+------------------------------------------------------------
+
+Causal and Attribution Effect -> Impact and Consequences (count=40)
+  [48] Forests such as the Amazon are vital in regulating global climate systems. Large-scale deforestation destroys trees that would otherwise absorb carbon dioxide. Many forests are cleared for agriculture, particularly livestock and crop production. Stronger environmental laws could prevent this destruction.
+  [58] Indigenous communities are often the most affected by climate change. Many live in regions facing deforestation, pollution, or rising seas. At the same time, they play a crucial role in protecting ecosystems. Their knowledge contributes to sustainable environmental management.
+  [71] Climate mitigation also involves protecting natural ecosystems. Halting deforestation is essential because forests store large amounts of carbon. Sustainable land management can further enhance carbon storage. Restoring ecosystems therefore supports long-term climate stability.
+
+Causal and Attribution Effect -> Action and Solutions (count=30)
+  [16] International climate agreements aim to coordinate global efforts to reduce emissions and limit temperature rise. Participating nations commit to shared targets, transparent reporting, and financial assistance for developing countries. These treaties promote cooperation, accountability, and long-term planning. However, political resistance and economic concerns continue to hinder full compliance, undermining the effe
+  [19] Global climate governance relies on cooperation between governments, businesses, and international organizations to drive collective mitigation efforts. Corporate leadership plays a crucial role in scaling renewable energy solutions, reducing emissions, and promoting sustainable finance. Science-based targets guide companies toward credible net-zero pathways. Transparent monitoring and accountability mechanisms ensur
+  [31] Climate-resilient agriculture integrates drought-resistant crops, efficient irrigation, and soil conservation techniques. These practices enhance food security, reduce vulnerability, and stabilize rural livelihoods. Policy support and farmer training remain essential to scaling sustainable agricultural adaptation strategies.
+
+Causal and Attribution Effect -> Epistemic and Scientific Research (count=30)
+  [124] The greenhouse effect explains how increasing concentrations of carbon dioxide influence global temperatures. The Earth receives energy from the Sun and radiates part of this energy back into space as infrared radiation. Greenhouse gases absorb some of this outgoing radiation, trapping heat within the atmosphere. When greenhouse gas concentrations rise, the natural energy balance of the planet becomes disrupted, caus
+  [259] Ancient ice core studies reveal that Earth's climate responds to GHG levels. The earth's surface temperature is a balance between the incoming and the outgoing heat energy. However, human activities like burning fossil fuels, deforestation and industrialization is driving this balance into extinction.
+  [268] One CFC molecule is 10,000 times more effective in trapping heat than a carbon dioxide molecule. CFCs can remain in the atmosphere for 110 years. They were banned by the Montreal Protocol agreement in 1987 and were phased out of use in the mid-90s due to their wreaking havoc on the ozone layer- a protective layer against detrimental UV-rays.
+
+Action and Solutions -> Causal and Attribution Effect (count=26)
+  [7] Urgent and coordinated action is required to reduce greenhouse gas emissions and limit the impacts of climate change. Governments, businesses, and individuals must adopt sustainable practices, transition to renewable energy, and implement policies that promote environmental responsibility. These measures are essential to prevent irreversible damage and ensure long-term ecological stability.
+  [29] Climate communication strategies aim to increase public awareness, foster behavioral change, and mobilize social action. Clear messaging highlights risks, promotes sustainable lifestyles, and encourages political engagement. Effective communication empowers communities to participate actively in climate mitigation and adaptation efforts.
+  [32] Renewable energy transitions reduce fossil fuel dependence and lower greenhouse gas emissions. Solar, wind, and hydropower systems promote energy security, economic opportunity, and environmental sustainability. Infrastructure investment and policy incentives accelerate the shift toward decarbonized energy systems.
+
+Epistemic and Scientific Research -> Causal and Attribution Effect (count=26)
+  [45] Many homes waste energy because they are poorly insulated. Heating buildings with oil or gas boilers contributes to greenhouse gas emissions. Governments can improve efficiency by supporting insulation programs and heat pump technologies. These measures reduce energy consumption and emissions.
+  [50] Modern consumption patterns place heavy pressure on the planet. Industries often produce far more goods than are actually needed. High consumption drives emissions through manufacturing, transport, and waste. Reducing consumption can therefore reduce environmental strain.
+  [57] Around the world, millions of people are participating in climate activism. Social movements demand stronger climate policies and faster action. Organizations such as environmental groups challenge governments and corporations. Public pressure can influence political decision-making.

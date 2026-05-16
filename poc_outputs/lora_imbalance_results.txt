@@ -1,0 +1,73 @@
+Imbalance-Aware LoRA Experiments
+============================================================
+Dataset path: E:\Frames\newdata\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling: exact-text merge
+Rows evaluated: 829
+Backbone: climatebert/distilroberta-base-climate-f
+CV: Stratified 5-fold
+Epochs per fold: 4
+
+-- Effective-Weight CE --
+Fold accuracy: ['0.627', '0.584', '0.578', '0.602', '0.600']
+Mean accuracy: 0.5983 +/- 0.0168
+Fold macro-F1: ['0.441', '0.521', '0.509', '0.508', '0.468']
+Mean macro-F1: 0.4895 +/- 0.0303
+                                   precision    recall  f1-score   support
+
+             Action and Solutions      0.570     0.671     0.616       152
+    Causal and Attribution Effect      0.581     0.528     0.553       231
+Epistemic and Scientific Research      0.688     0.665     0.676       209
+          Impact and Consequences      0.576     0.661     0.616       183
+     Socio-Political and Economic      0.286     0.133     0.182        15
+              Temporal and Scalar      0.476     0.256     0.333        39
+
+                         accuracy                          0.598       829
+                        macro avg      0.529     0.486     0.496       829
+                     weighted avg      0.595     0.598     0.593       829
+
+-- Class-Balanced Focal --
+Fold accuracy: ['0.627', '0.590', '0.584', '0.602', '0.600']
+Mean accuracy: 0.6007 +/- 0.0144
+Fold macro-F1: ['0.440', '0.522', '0.513', '0.498', '0.555']
+Mean macro-F1: 0.5055 +/- 0.0378
+                                   precision    recall  f1-score   support
+
+             Action and Solutions      0.575     0.658     0.613       152
+    Causal and Attribution Effect      0.577     0.550     0.563       231
+Epistemic and Scientific Research      0.709     0.665     0.686       209
+          Impact and Consequences      0.570     0.645     0.605       183
+     Socio-Political and Economic      0.375     0.200     0.261        15
+              Temporal and Scalar      0.458     0.282     0.349        39
+
+                         accuracy                          0.601       829
+                        macro avg      0.544     0.500     0.513       829
+                     weighted avg      0.599     0.601     0.597       829
+
+-- Logit-Adjusted CE --
+Fold accuracy: ['0.614', '0.560', '0.554', '0.578', '0.576']
+Mean accuracy: 0.5766 +/- 0.0210
+Fold macro-F1: ['0.559', '0.478', '0.502', '0.485', '0.507']
+Mean macro-F1: 0.5061 +/- 0.0283
+                                   precision    recall  f1-score   support
+
+             Action and Solutions      0.619     0.684     0.650       152
+    Causal and Attribution Effect      0.631     0.481     0.545       231
+Epistemic and Scientific Research      0.722     0.584     0.646       209
+          Impact and Consequences      0.567     0.628     0.596       183
+     Socio-Political and Economic      0.149     0.467     0.226        15
+              Temporal and Scalar      0.288     0.487     0.362        39
+
+                         accuracy                          0.577       829
+                        macro avg      0.496     0.555     0.504       829
+                     weighted avg      0.613     0.577     0.587       829
+
+-- Best Strategy --
+Logit-Adjusted CE
+Accuracy: 0.5766
+Macro-F1: 0.5061
+
+Delta vs Effective-Weight CE
+------------------------------------------------------------
+Effective-Weight CE: accuracy_delta=+0.0000 macro_f1_delta=+0.0000
+Class-Balanced Focal: accuracy_delta=+0.0024 macro_f1_delta=+0.0160
+Logit-Adjusted CE: accuracy_delta=-0.0217 macro_f1_delta=+0.0166

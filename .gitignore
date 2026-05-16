@@ -15,7 +15,22 @@ ENV/
 # System files
 .DS_Store
 Thumbs.db
+*.lock
+
+# Local session memory / app state
+Session_Copilot/
 
 # LoRA / HuggingFace training checkpoints
 poc_outputs/lora_fold*/
+poc_outputs/newdata_lora_fold*/
+poc_outputs/token_lora_fold*/
+poc_outputs/trigger_threshold_fold*/
+poc_outputs/structured_trigger_fold*/
+poc_outputs/lora_imbalance_*/
+poc_outputs/setfit_fold*/
+poc_outputs/tmp_newdata_lora/
 runs/
+
+# Generated run traces and scratch analysis artifacts
+poc_outputs/*_run.log
+poc_outputs/*.npz

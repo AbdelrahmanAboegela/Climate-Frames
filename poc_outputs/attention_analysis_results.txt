@@ -7,8 +7,10 @@ Attention Analysis Results — ClimateBERT Base Model
     "burning": 0.008046
     "fossil fuels": 0.004457
     "human activities": 0.005652
-  Avg non-frame token attention: 0.007278
-  Attention ratio (frame/non-frame): 0.83x
+    "greenhouse gases": 0.004061
+    "intensifying": 0.005261
+  Avg non-frame token attention: 0.007464
+  Attention ratio (frame/non-frame): 0.74x
 
   Frame: Causal and Attribution Effect
   Text: Burning fossil fuels generates greenhouse gas emissions that act like a blanket ...
@@ -21,8 +23,11 @@ Attention Analysis Results — ClimateBERT Base Model
     "greenhouse gases": 0.004916
     "heat": 0.006267
     "industrial production": 0.004955
-  Avg non-frame token attention: 0.007863
-  Attention ratio (frame/non-frame): 0.70x
+    "greenhouse gas emissions": 0.005246
+    "trapping heat": 0.006347
+    "raising global temperatures": 0.004919
+  Avg non-frame token attention: 0.008049
+  Attention ratio (frame/non-frame): 0.68x
 
   Frame: Causal and Attribution Effect
   Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as ...
@@ -36,5 +41,7 @@ Attention Analysis Results — ClimateBERT Base Model
     "melting": 0.008747
     "trap heat": 0.007272
     "warming": 0.009212
-  Avg non-frame token attention: 0.008994
-  Attention ratio (frame/non-frame): 0.80x
+    "shrinking": 0.008396
+    "accelerates ice melt": 0.006067
+  Avg non-frame token attention: 0.009110
+  Attention ratio (frame/non-frame): 0.79x
