@@ -1,0 +1,31 @@
+Trigger Threshold Sweep
+============================================================
+Dataset path: E:\Frames\data\current\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling: exact-text merge
+
+Argmax baseline
+------------------------------------------------------------
+Entity precision: 0.2123
+Entity recall:    0.6173
+Entity F1:        0.3159
+Token precision:  0.3740
+Token recall:     0.8949
+Token F1:         0.5275
+
+Threshold sweep
+------------------------------------------------------------
+thr=0.30 entity_F1=0.1203 entity_P=0.0912 entity_R=0.1767 token_F1=0.4416
+thr=0.35 entity_F1=0.1392 entity_P=0.1041 entity_R=0.2100 token_F1=0.4565
+thr=0.40 entity_F1=0.1584 entity_P=0.1176 entity_R=0.2428 token_F1=0.4732
+thr=0.45 entity_F1=0.1724 entity_P=0.1273 entity_R=0.2670 token_F1=0.4891
+thr=0.50 entity_F1=0.1872 entity_P=0.1382 entity_R=0.2899 token_F1=0.5055
+thr=0.55 entity_F1=0.2022 entity_P=0.1497 entity_R=0.3113 token_F1=0.5214
+thr=0.60 entity_F1=0.2153 entity_P=0.1608 entity_R=0.3258 token_F1=0.5377
+thr=0.65 entity_F1=0.2286 entity_P=0.1730 entity_R=0.3369 token_F1=0.5534
+thr=0.70 entity_F1=0.2414 entity_P=0.1864 entity_R=0.3426 token_F1=0.5682
+
+Best thresholds
+------------------------------------------------------------
+Best entity-F1 threshold: 0.70 (entity_F1=0.2414, token_F1=0.5682)
+Best token-F1 threshold:  0.70 (token_F1=0.5682, entity_F1=0.2414)
+

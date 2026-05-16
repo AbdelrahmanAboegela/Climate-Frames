@@ -1,0 +1,118 @@
+Climate Frames Dataset Audit
+============================================================
+Active workbook: E:\Frames\data\current\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling target for modeling: exact-text merge
+
+Counts
+------------------------------------------------------------
+Raw annotation rows kept: 1081
+Merged unique texts:      829
+Core frame inventory:     6
+Core counts:              {'Causal and Attribution Effect': 231, 'Epistemic and Scientific Research': 209, 'Impact and Consequences': 183, 'Action and Solutions': 152, 'Temporal and Scalar': 39, 'Socio-Political and Economic': 15}
+
+Duplicate Structure
+------------------------------------------------------------
+Duplicate text groups:      252
+Rows in duplicate groups:   504
+Extra duplicate rows:       252
+Maximum group size:         2
+Full row duplicates:        17
+Core-conflict groups:       0
+Peripheral-variant groups:  2
+Token-variant groups:       235
+Role-variant groups:        233
+
+Sample duplicate groups with annotation variation
+------------------------------------------------------------
+Sample 1
+Rows: [2, 240]
+Core: ['Causal and Attribution Effect']
+Peripheral variants: ['anthropogenic causation | natural variability and human influence', 'anthropogenic causation | natural variability and human influence | international impact']
+Token variants: ['burning | fossil fuels | greenhouse gas | human activities | temperature', 'human activities | burning | fossil fuels | greenhouse gases | intensifying | rising temperatures']
+Role variants: ['Cause, Agent, Source', 'Cause: human activities, burning of fossil fuels, greenhouse gas emissions; Agent: Human activities; Source: Fossil fuels']
+Text: Climate change refers to long-term shifts in temperatures and weather patterns. These shifts may be natural, caused by changes in solar activity or volcanic eruptions. However, since the 1800s, human activities have become the dominant driver of climate change, mainly through the burning of fossil fuels such as coal, oil, and gas. These activities release large amounts of greenhouse gases into the
+
+Sample 2
+Rows: [3, 241]
+Core: ['Causal and Attribution Effect']
+Peripheral variants: ['anthropogenic causation | sectoral attribution']
+Token variants: ['agriculture | burning | deforestation | emissions | fossil fuels | greenhouse gas | greenhouse gases | heat | industrial production', 'burning | fossil fuels | greenhouse gas emissions | trapping heat | raising global temperatures | agriculture | deforestation | industrial production']
+Role variants: ['Cause, Agent, Source', 'Cause: Burning fossil fuels, sectoral activities; Agent: Human activities (driving, heating, industrial production, agriculture, deforestation); Source: Fossil fuels, specific sectors']
+Text: Burning fossil fuels generates greenhouse gas emissions that act like a blanket around the Earth, trapping heat and raising global temperatures. The main greenhouse gases responsible for climate change include carbon dioxide and methane, which are released through activities such as driving cars, heating buildings, industrial production, agriculture, and deforestation. Energy production, transport
+
+Sample 3
+Rows: [4, 242]
+Core: ['Causal and Attribution Effect']
+Peripheral variants: ['anthropogenic causation | environmental and ecological impact']
+Token variants: ['burning | carbon pollution | fossil fuels | glaciers | greenhouse gas | greenhouse gases | heat | ice melt | melting | trap heat | warming', 'melting | shrinking | carbon pollution | burning | fossil fuels | greenhouse gases | trap heat | warming | accelerates ice melt']
+Role variants: ['Cause, Agent, Source', 'Cause: carbon pollution, burning of fossil fuels, greenhouse gases; Agent: Human activities; Source: Fossil fuels']
+Text: Glaciers and Arctic sea ice are melting and shrinking at unprecedented rates as global temperatures rise. This rapid loss of ice is driven primarily by carbon pollution from the burning of fossil fuels, which increases the concentration of greenhouse gases in the atmosphere. These gases trap heat, warming both the air and the oceans, which accelerates ice melt and destabilizes polar environments.
+
+Sample 4
+Rows: [5, 243]
+Core: ['Impact and Consequences']
+Peripheral variants: ['environmental and ecological impact | tipping cascade']
+Token variants: ['accelerating | ecosystem | ecosystems | flooding | freshwater | glaciers | ice | instability | melt | threaten | warming | wildlife habitats', 'sea levels rise | flooding | threatens | ecosystems | wildlife habitats | freshwater supplies | accelerating warming | environmental instability']
+Role variants: ['Affected_Entity, Phenomenon, Impact', "Affected_Entity: coastal communities, ecosystems, wildlife habitats, freshwater supplies, human populations, Earth's climate system; Phenomenon: melting of ice, sea level rise; Impact: flooding, threat to ecosystems, stress, accelerated warming, instability"]
+Text: As glaciers and sea ice continue to melt, sea levels rise, increasing the risk of flooding for coastal communities. This process threatens ecosystems, wildlife habitats, and freshwater supplies, placing additional stress on human populations. The loss of ice also reduces the Earth’s ability to reflect sunlight, further accelerating warming and contributing to long-term environmental instability.
+
+Sample 5
+Rows: [6, 244]
+Core: ['Impact and Consequences']
+Peripheral variants: ['extreme weather and climate event | environmental and ecological impact']
+Token variants: ['destruction | heavier rainfall | hurricanes | severe | storms', 'stronger | wetter | destructive | fuels storms | intensify | heavier rainfall | severe | destruction']
+Role variants: ['Affected_Entity, Phenomenon, Impact', 'Affected_Entity: hurricanes, storms, vulnerable coastal regions; Phenomenon: warmer ocean temperatures, rising global temperatures; Impact: stronger storms, heavier rainfall, more frequent and severe events, widespread destruction']
+Text: Climate change is making hurricanes stronger, wetter, and more destructive. Warmer ocean temperatures provide additional energy that fuels storms, allowing them to intensify more rapidly and produce heavier rainfall. As global temperatures rise, storms are becoming more frequent and severe, increasing their potential to cause widespread destruction across vulnerable coastal regions.
+
+Trigger Coverage
+------------------------------------------------------------
+Rows with all trigger types found exactly: 528
+Rows with some trigger types found:        528
+Rows with no trigger type found:           20
+Rows with no trigger annotations:          5
+Matched trigger types overall:             7548/8710
+
+Role Alignment
+------------------------------------------------------------
+Rows with role annotations:        1081
+Exact token-role count matches:    93
+Token-role count mismatches:       988
+
+Peripheral Labels
+------------------------------------------------------------
+Normalized peripheral labels: 40
+Average labels per text:      1.745
+Maximum labels per text:      3
+Labels with support >= 5:     30
+Labels with support >= 10:    28
+Labels with support >= 20:    24
+Top labels:
+  policy and government action                  121
+  environmental and ecological impact           116
+  extreme weather and climate event             98
+  mitigation and emission reduction             93
+  adaptation and resistance                     85
+  responsibility                                74
+  new discovery and scientific progress         70
+  anthropogenic causation                       65
+  human health and public health                60
+  technological innovation solution             60
+  urgency                                       60
+  sectoral attribution                          59
+  climate model and projections                 56
+  international impact                          48
+  economic cost and financial impact            45
+
+Leakage Audit (TF-IDF + LogisticRegression)
+------------------------------------------------------------
+raw_row_level          acc=0.6735 +/- 0.0224 macro_f1=0.6512 +/- 0.0441
+raw_grouped_by_text    acc=0.5429 +/- 0.0422 macro_f1=0.3793 +/- 0.0328
+merged_unique_texts    acc=0.5380 +/- 0.0212 macro_f1=0.4055 +/- 0.0326
+
+Legacy Dataset Overlap
+------------------------------------------------------------
+Legacy Rows               232
+Legacy Unique Texts       232
+Overlap Texts             232
+New Only Texts            597
+Legacy Only Texts         0

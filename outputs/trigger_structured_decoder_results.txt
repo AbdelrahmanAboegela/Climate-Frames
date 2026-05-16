@@ -1,0 +1,32 @@
+Trigger Structured Decoder
+============================================================
+Dataset path: E:\Frames\data\current\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling: exact-text merge
+
+Argmax decoding
+------------------------------------------------------------
+entity_precision: 0.2110
+entity_recall: 0.6122
+entity_f1: 0.3139
+token_precision: 0.3746
+token_recall: 0.8894
+token_f1: 0.5272
+
+Transition-aware Viterbi decoding
+------------------------------------------------------------
+entity_precision: 0.3970
+entity_recall: 0.2593
+entity_f1: 0.3137
+token_precision: 0.5845
+token_recall: 0.4767
+token_f1: 0.5251
+
+Delta (Viterbi - Argmax)
+------------------------------------------------------------
+entity_precision: +0.1859
+entity_recall: -0.3529
+entity_f1: -0.0002
+token_precision: +0.2098
+token_recall: -0.4127
+token_f1: -0.0021
+

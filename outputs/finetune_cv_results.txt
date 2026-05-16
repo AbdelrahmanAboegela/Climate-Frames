@@ -1,0 +1,89 @@
+Climate Frames Benchmark Suite
+============================================================
+Dataset path: E:\Frames\data\current\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling: exact-text merge
+Rows evaluated: 829
+Core labels: 6
+Model family: climatebert/distilroberta-base-climate-f
+CV: Stratified 5-fold for core, shuffled 5-fold for peripheral
+
+-- TF-IDF + LogisticRegression --
+Fold accuracy: ['0.536', '0.506', '0.542', '0.572', '0.533']
+Mean accuracy: 0.5380 +/- 0.0212
+Fold macro-F1: ['0.372', '0.374', '0.440', '0.393', '0.449']
+Mean macro-F1: 0.4055 +/- 0.0326
+                                   precision    recall  f1-score   support
+
+             Action and Solutions       0.52      0.52      0.52       152
+    Causal and Attribution Effect       0.56      0.49      0.53       231
+Epistemic and Scientific Research       0.57      0.70      0.63       209
+          Impact and Consequences       0.54      0.56      0.55       183
+     Socio-Political and Economic       0.29      0.13      0.18        15
+              Temporal and Scalar       0.06      0.03      0.04        39
+
+                         accuracy                           0.54       829
+                        macro avg       0.42      0.41      0.41       829
+                     weighted avg       0.52      0.54      0.53       829
+
+-- Frozen ClimateBERT + LogisticRegression --
+Fold accuracy: ['0.633', '0.560', '0.602', '0.584', '0.539']
+Mean accuracy: 0.5838 +/- 0.0324
+Fold macro-F1: ['0.594', '0.484', '0.515', '0.501', '0.464']
+Mean macro-F1: 0.5115 +/- 0.0445
+                                   precision    recall  f1-score   support
+
+             Action and Solutions       0.60      0.63      0.61       152
+    Causal and Attribution Effect       0.59      0.49      0.54       231
+Epistemic and Scientific Research       0.66      0.65      0.66       209
+          Impact and Consequences       0.61      0.63      0.62       183
+     Socio-Political and Economic       0.18      0.40      0.25        15
+              Temporal and Scalar       0.35      0.41      0.38        39
+
+                         accuracy                           0.58       829
+                        macro avg       0.50      0.54      0.51       829
+                     weighted avg       0.59      0.58      0.59       829
+
+-- LoRA Sequence Classification --
+Fold accuracy: ['0.608', '0.584', '0.572', '0.602', '0.600']
+Mean accuracy: 0.5935 +/- 0.0133
+Fold macro-F1: ['0.428', '0.521', '0.505', '0.508', '0.468']
+Mean macro-F1: 0.4860 +/- 0.0340
+                                   precision    recall  f1-score   support
+
+             Action and Solutions       0.57      0.68      0.62       152
+    Causal and Attribution Effect       0.58      0.52      0.55       231
+Epistemic and Scientific Research       0.68      0.67      0.67       209
+          Impact and Consequences       0.57      0.64      0.60       183
+     Socio-Political and Economic       0.29      0.13      0.18        15
+              Temporal and Scalar       0.45      0.26      0.33        39
+
+                         accuracy                           0.59       829
+                        macro avg       0.52      0.48      0.49       829
+                     weighted avg       0.59      0.59      0.59       829
+
+-- Dictionary Token Baseline --
+Precision: 0.6138
+Recall:    0.0409
+F1:        0.0767
+
+-- Peripheral Multi-Label Baseline --
+Labels retained (support >= 10): 28
+Micro-F1: 0.4788 +/- 0.0065
+Macro-F1: 0.4138 +/- 0.0187
+Top frequent labels (support >= 20):
+  extreme weather and climate event             support= 98 f1=0.685
+  mitigation and emission reduction             support= 93 f1=0.632
+  policy and government action                  support=121 f1=0.625
+  human health and public health                support= 60 f1=0.561
+  anthropogenic causation                       support= 65 f1=0.543
+  climate model and projections                 support= 56 f1=0.540
+  adaptation and resistance                     support= 85 f1=0.534
+  new discovery and scientific progress         support= 70 f1=0.519
+  environmental and ecological impact           support=116 f1=0.517
+  international impact                          support= 48 f1=0.483
+  scientific uncertainty and debate             support= 39 f1=0.474
+  technological innovation solution             support= 60 f1=0.461
+  sectoral attribution                          support= 59 f1=0.449
+  economic cost and financial impact            support= 45 f1=0.443
+  climate monitoring and observation            support= 27 f1=0.438
+

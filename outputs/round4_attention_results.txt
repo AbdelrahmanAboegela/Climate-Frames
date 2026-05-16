@@ -1,0 +1,91 @@
+Head-level Frame Attention Scores
+==================================================
+Model: 6 layers × 12 heads = 72 heads
+Paragraphs analyzed: 809
+
+Global mean ratio: 0.8155
+Std dev: 1.4245
+
+Top 5 frame-attending heads (highest ratio):
+  Layer 1, Head 7: 12.521x
+  Layer 1, Head 11: 1.767x
+  Layer 1, Head 9: 1.372x
+  Layer 2, Head 10: 1.239x
+  Layer 1, Head 2: 1.069x
+
+Bottom 5 heads (least frame attention):
+  Layer 5, Head 8: 0.178x
+  Layer 5, Head 9: 0.176x
+  Layer 5, Head 10: 0.151x
+  Layer 5, Head 7: 0.098x
+  Layer 5, Head 6: 0.042x
+
+Per-layer average ratio:
+  Layer 1: 1.963
+  Layer 2: 0.889
+  Layer 3: 0.675
+  Layer 4: 0.494
+  Layer 5: 0.272
+  Layer 6: 0.599
+
+
+Attention Rollout Analysis
+==================================================
+Mean rollout ratio (frame/non-frame): 0.5461
+Median: 0.5303
+Paragraphs where frame tokens get MORE attention: 6/809
+Range: 0.264 – 1.221
+
+
+Per-Paragraph Attention Heatmaps
+==================================================
+
+P0 (Causal and Attribution Effect):
+  Tokens: 107, Frame tokens: 14
+  Top 5 attended tokens (rollout):
+      .                    0.0967
+      .                    0.0833
+      ,                    0.0129
+      ,                    0.0093
+      ,                    0.0078
+
+P2 (Causal and Attribution Effect):
+  Tokens: 86, Frame tokens: 22
+  Top 5 attended tokens (rollout):
+      .                    0.1135
+      .                    0.1035
+      ,                    0.0121
+      ▸ice                 0.0089
+      ▸This                0.0073
+
+P15 (Causal and Attribution Effect):
+  Tokens: 95, Frame tokens: 31
+  Top 5 attended tokens (rollout):
+      .                    0.1030
+      .                    0.0235
+      ▸national            0.0069
+      technologies         0.0064
+    ★ ▸Investments         0.0064
+
+
+Frame Token Cross-Attention (Last Layer)
+==================================================
+Paragraphs analyzed: 809
+
+  Frame→Frame:     0.00757
+  Frame→Non-frame: 0.00805
+  Non-frame→Frame: 0.00263
+  Non-frame→Non:   0.00901
+
+  Frame→Frame / Frame→Non ratio: 0.940x
+  → No strong frame-to-frame preference
+
+
+Attention Entropy Analysis
+==================================================
+Mean entropy across all heads: 3.52 bits
+Most focused head: L2 H6 (0.74 bits)
+Most diffuse head: L1 H4 (6.13 bits)
+
+Correlation (entropy vs frame ratio): -0.1731
+  → No strong correlation between focus and frame preference

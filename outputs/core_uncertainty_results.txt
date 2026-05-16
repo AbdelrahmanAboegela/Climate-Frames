@@ -1,0 +1,29 @@
+Core Uncertainty and Paired Bootstrap Analysis
+============================================================
+Dataset path: E:\Frames\data\current\14 May 2026 12 articles Ann. Core Peripheral RST and FrameNET Structure.xlsx
+Duplicate handling: exact-text merge
+Rows evaluated: 829
+Bootstrap resamples: 4000
+
+-- TF-IDF LR --
+Accuracy: 0.5380  95% CI [0.5030, 0.5718]
+Macro-F1: 0.4070  95% CI [0.3618, 0.4523]
+
+-- Frozen ClimateBERT LR --
+Accuracy: 0.5838  95% CI [0.5501, 0.6188]
+Macro-F1: 0.5092  95% CI [0.4635, 0.5519]
+
+-- Fusion LR --
+Accuracy: 0.6068  95% CI [0.5730, 0.6393]
+Macro-F1: 0.5350  95% CI [0.4838, 0.5830]
+
+-- Soft-Vote Ensemble --
+Accuracy: 0.6031  95% CI [0.5706, 0.6357]
+Macro-F1: 0.5368  95% CI [0.4856, 0.5848]
+
+Paired Bootstrap Delta on Macro-F1
+------------------------------------------------------------
+Fusion LR vs Frozen ClimateBERT LR: delta=+0.0252 95% CI [+0.0067, +0.0437] approx_p=0.0050
+Soft-Vote Ensemble vs Frozen ClimateBERT LR: delta=+0.0269 95% CI [+0.0098, +0.0449] approx_p=0.0025
+Soft-Vote Ensemble vs Fusion LR: delta=+0.0017 95% CI [-0.0156, +0.0204] approx_p=0.8515
+
