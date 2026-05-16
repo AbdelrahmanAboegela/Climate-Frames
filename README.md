@@ -23,6 +23,21 @@ The current data is large enough for meaningful benchmarking, but it is not larg
 
 This README is written as a full research workspace guide: what data is active, why the evaluation protocol looks the way it does, what each experiment tried to answer, which approaches failed, and which findings are strong enough to anchor a paper.
 
+## 1.1 Quick Start
+
+From the repository root:
+
+```bash
+python -m pip install -r requirements/requirements-research.txt
+python -m experiments.analysis.poc_dataset_audit
+```
+
+Useful conventions:
+
+- run all experiment commands from the repository root so the `climate_frames` and `experiments` packages resolve cleanly
+- the default active workbook lives in `data/current/`
+- committed benchmark figures and text summaries are written to `outputs/`
+
 ## 2. Research Questions
 
 The current repository is organized around five practical questions:
@@ -965,6 +980,8 @@ Compatibility note:
 
 ### 16.2 Suggested rerun order
 
+Run the commands below from the repository root.
+
 ```bash
 python -m experiments.analysis.poc_dataset_audit
 python -m experiments.analysis.poc_base_model_analysis
@@ -985,6 +1002,8 @@ python -m experiments.benchmarks.poc_trigger_crf
 ```
 
 All scripts now default to the expanded workbook through `climate_frames/dataset.py`.
+
+If you need to point the code at a different workbook without editing source, set `CLFRAMES_DATA_PATH` before running a module.
 
 ## 17. Method References
 
